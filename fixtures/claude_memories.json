@@ -1,0 +1,9 @@
+[
+  {
+    "account_uuid": "synthetic-account",
+    "conversations_memory": "The user is designing a private local knowledge archive.",
+    "project_memories": {
+      "synthetic-project": "The project uses a small relational database."
+    }
+  }
+]

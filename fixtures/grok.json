@@ -1,0 +1,87 @@
+{
+  "conversations": [
+    {
+      "conversation": {
+        "id": "grok-conversation-1",
+        "create_time": "2024-03-01T12:00:00Z",
+        "modify_time": "2024-03-01T12:04:00Z",
+        "title": "Local Grok archive",
+        "summary": "Synthetic test data",
+        "system_prompt_name": "Excluded system prompt"
+      },
+      "responses": [
+        {
+          "response": {
+            "_id": "grok-user-1",
+            "conversation_id": "grok-conversation-1",
+            "message": "Can Grok history stay in the local archive?",
+            "sender": "human",
+            "create_time": {"$date": {"$numberLong": "1709294400000"}},
+            "model": "",
+            "metadata": null
+          },
+          "share_link": null
+        },
+        {
+          "response": {
+            "_id": "grok-assistant-1",
+            "conversation_id": "grok-conversation-1",
+            "parent_response_id": "grok-user-1",
+            "message": "Yes. Store visible dialogue in SQLite.",
+            "sender": "ASSISTANT",
+            "create_time": {"$date": {"$numberLong": "1709294460000"}},
+            "thinking_trace": "hiddenchainmarker",
+            "model": "",
+            "metadata": null
+          },
+          "share_link": null
+        },
+        {
+          "response": {
+            "_id": "grok-assistant-branch",
+            "conversation_id": "grok-conversation-1",
+            "parent_response_id": "grok-user-1",
+            "message": "An alternate response remains attached to the same parent.",
+            "sender": "ASSISTANT",
+            "create_time": {"$date": {"$numberLong": "1709294520000"}},
+            "model": "",
+            "metadata": null
+          },
+          "share_link": null
+        },
+        {
+          "response": {
+            "_id": "grok-user-file",
+            "conversation_id": "grok-conversation-1",
+            "parent_response_id": "grok-assistant-1",
+            "message": "Please inspect the attached document.",
+            "sender": "human",
+            "create_time": {"$date": {"$numberLong": "1709294580000"}},
+            "file_attachments": ["private-attachment-marker.pdf"],
+            "model": "",
+            "metadata": null
+          },
+          "share_link": null
+        },
+        {
+          "response": {
+            "_id": "grok-error",
+            "conversation_id": "grok-conversation-1",
+            "parent_response_id": "grok-user-file",
+            "message": "",
+            "sender": "ASSISTANT",
+            "create_time": {"$date": {"$numberLong": "1709294640000"}},
+            "partial": true,
+            "error": "Synthetic error metadata",
+            "model": "",
+            "metadata": null
+          },
+          "share_link": null
+        }
+      ]
+    }
+  ],
+  "projects": [],
+  "tasks": [],
+  "media_posts": []
+}

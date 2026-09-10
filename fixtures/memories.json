@@ -1,0 +1,12 @@
+{
+  "provider": "example",
+  "memories": [
+    {
+      "id": "preference-1",
+      "kind": "custom_instruction",
+      "title": "Communication preference",
+      "text": "Use plain English and keep explanations calm.",
+      "created_at": "2024-01-01T12:00:00Z"
+    }
+  ]
+}

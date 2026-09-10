@@ -1,0 +1,69 @@
+[
+  {
+    "id": "deepseek-conversation-1",
+    "title": "Local DeepSeek archive",
+    "inserted_at": "2024-02-01T12:00:00Z",
+    "updated_at": "2024-02-01T12:03:00Z",
+    "mapping": {
+      "root": {
+        "id": "root",
+        "parent": null,
+        "children": ["1"],
+        "message": null
+      },
+      "1": {
+        "id": "1",
+        "parent": "root",
+        "children": ["2", "3"],
+        "message": {
+          "model": "deepseek-chat",
+          "inserted_at": "2024-02-01T12:00:00Z",
+          "fragments": [
+            {"type": "REQUEST", "content": "Can DeepSeek history use the local archive?"}
+          ]
+        }
+      },
+      "2": {
+        "id": "2",
+        "parent": "1",
+        "children": ["4"],
+        "message": {
+          "model": "deepseek-chat",
+          "inserted_at": "2024-02-01T12:01:00Z",
+          "fragments": [
+            {"type": "RESPONSE", "content": "Yes. Import it into the same SQLite database."}
+          ]
+        }
+      },
+      "3": {
+        "id": "3",
+        "parent": "1",
+        "children": [],
+        "message": {
+          "model": "deepseek-chat",
+          "inserted_at": "2024-02-01T12:02:00Z",
+          "fragments": [
+            {"type": "RESPONSE", "content": "An alternate branch can remain linked to its parent."}
+          ]
+        }
+      },
+      "4": {
+        "id": "4",
+        "parent": "2",
+        "children": [],
+        "message": {
+          "model": "deepseek-chat",
+          "inserted_at": "2024-02-01T12:03:00Z",
+          "fragments": [
+            {
+              "type": "FILE",
+              "files": [
+                {"file_id": "synthetic-file", "file_name": "private-notes.pdf", "file_size": 128}
+              ]
+            }
+          ]
+        }
+      }
+    }
+  }
+]

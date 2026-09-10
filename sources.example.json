@@ -1,0 +1,8 @@
+{
+  "exports": [
+    {
+      "path": "/path/to/provider-export",
+      "account": "personal"
+    }
+  ]
+}

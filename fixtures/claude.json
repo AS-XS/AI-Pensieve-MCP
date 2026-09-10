@@ -1,0 +1,34 @@
+[
+  {
+    "uuid": "claude-conversation-1",
+    "name": "Local archive design",
+    "summary": "A synthetic conversation about a local archive.",
+    "created_at": "2024-01-01T12:00:00.000000Z",
+    "updated_at": "2024-01-01T12:02:00.000000Z",
+    "account": {"uuid": "synthetic-account"},
+    "chat_messages": [
+      {
+        "uuid": "claude-user-1",
+        "parent_message_uuid": "external-root",
+        "sender": "human",
+        "text": "Can the archive stay on my laptop?",
+        "created_at": "2024-01-01T12:00:00.000000Z",
+        "updated_at": "2024-01-01T12:00:00.000000Z",
+        "content": [{"type": "text", "text": "Can the archive stay on my laptop?"}],
+        "attachments": [],
+        "files": []
+      },
+      {
+        "uuid": "claude-assistant-1",
+        "parent_message_uuid": "claude-user-1",
+        "sender": "assistant",
+        "text": "Yes. SQLite keeps the archive local and searchable.",
+        "created_at": "2024-01-01T12:01:00.000000Z",
+        "updated_at": "2024-01-01T12:01:00.000000Z",
+        "content": [{"type": "text", "text": "Yes. SQLite keeps the archive local and searchable."}],
+        "attachments": [],
+        "files": []
+      }
+    ]
+  }
+]

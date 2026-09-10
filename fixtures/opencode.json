@@ -1,0 +1,75 @@
+{
+  "info": {
+    "id": "ses_synthetic_opencode",
+    "title": "Synthetic OpenCode session",
+    "directory": "/example/project",
+    "time": {
+      "created": 1756684800000,
+      "updated": 1756684860000
+    }
+  },
+  "messages": [
+    {
+      "info": {
+        "id": "msg_user_1",
+        "sessionID": "ses_synthetic_opencode",
+        "role": "user",
+        "time": {"created": 1756684800000}
+      },
+      "parts": [
+        {
+          "id": "part_user_text",
+          "sessionID": "ses_synthetic_opencode",
+          "messageID": "msg_user_1",
+          "type": "text",
+          "text": "Explain the archive boundary."
+        },
+        {
+          "id": "part_user_file",
+          "sessionID": "ses_synthetic_opencode",
+          "messageID": "msg_user_1",
+          "type": "file",
+          "filename": "privatefilemarker.txt",
+          "url": "file:///example/privatefilemarker.txt"
+        }
+      ]
+    },
+    {
+      "info": {
+        "id": "msg_assistant_1",
+        "sessionID": "ses_synthetic_opencode",
+        "role": "assistant",
+        "parentID": "msg_user_1",
+        "time": {
+          "created": 1756684801000,
+          "completed": 1756684860000
+        },
+        "finish": "stop"
+      },
+      "parts": [
+        {
+          "id": "part_reasoning",
+          "sessionID": "ses_synthetic_opencode",
+          "messageID": "msg_assistant_1",
+          "type": "reasoning",
+          "text": "hiddenreasoningmarker"
+        },
+        {
+          "id": "part_assistant_text",
+          "sessionID": "ses_synthetic_opencode",
+          "messageID": "msg_assistant_1",
+          "type": "text",
+          "text": "The archive stores visible dialogue and excludes tool traces."
+        },
+        {
+          "id": "part_tool",
+          "sessionID": "ses_synthetic_opencode",
+          "messageID": "msg_assistant_1",
+          "type": "tool",
+          "tool": "read",
+          "state": {"status": "completed", "output": "hiddentoolmarker"}
+        }
+      ]
+    }
+  ]
+}

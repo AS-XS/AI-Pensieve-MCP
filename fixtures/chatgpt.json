@@ -1,0 +1,55 @@
+[
+  {
+    "id": "conversation-1",
+    "conversation_id": "conversation-1",
+    "title": "Private local archive",
+    "create_time": 1700000000.0,
+    "update_time": 1700000300.0,
+    "mapping": {
+      "root": {
+        "id": "root",
+        "parent": null,
+        "message": null
+      },
+      "user-1": {
+        "id": "user-1",
+        "parent": "root",
+        "message": {
+          "id": "message-user-1",
+          "author": {"role": "user"},
+          "create_time": 1700000100.0,
+          "content": {
+            "content_type": "text",
+            "parts": ["How can I keep an AI archive private?"]
+          }
+        }
+      },
+      "assistant-local": {
+        "id": "assistant-local",
+        "parent": "user-1",
+        "message": {
+          "id": "message-assistant-local",
+          "author": {"role": "assistant"},
+          "create_time": 1700000200.0,
+          "content": {
+            "content_type": "text",
+            "parts": ["Keep the archive local and search it with SQLite."]
+          }
+        }
+      },
+      "assistant-cloud": {
+        "id": "assistant-cloud",
+        "parent": "user-1",
+        "message": {
+          "id": "message-assistant-cloud",
+          "author": {"role": "assistant"},
+          "create_time": 1700000300.0,
+          "content": {
+            "content_type": "text",
+            "parts": ["The alternate branch suggests cloud storage."]
+          }
+        }
+      }
+    }
+  }
+]

@@ -1,0 +1,170 @@
+[
+  {
+    "question": "What storage did we choose for my archive?",
+    "query": "archive AND SQLite",
+    "expected": [
+      {
+        "record_type": "message",
+        "provider": "chatgpt",
+        "account": "personal",
+        "conversation_id": "archive-design",
+        "record_id": "storage"
+      }
+    ],
+    "filters": {
+      "accounts": [
+        "personal"
+      ]
+    }
+  },
+  {
+    "question": "What was the revised backup decision in February?",
+    "query": "backup AND decision",
+    "expected": [
+      {
+        "record_type": "message",
+        "provider": "claude",
+        "account": "personal",
+        "conversation_id": "backup-revision",
+        "record_id": "new"
+      }
+    ],
+    "filters": {
+      "date_from": "2026-02-01",
+      "date_to": "2026-02-28"
+    }
+  },
+  {
+    "question": "What changed between the two backup plans?",
+    "query": "backup AND decision",
+    "expected": [
+      {
+        "record_type": "message",
+        "provider": "chatgpt",
+        "account": "personal",
+        "conversation_id": "backup-plan",
+        "record_id": "old"
+      },
+      {
+        "record_type": "message",
+        "provider": "claude",
+        "account": "personal",
+        "conversation_id": "backup-revision",
+        "record_id": "new"
+      }
+    ]
+  },
+  {
+    "question": "Where did we discuss French reading across apps?",
+    "query": "\"French reading\"",
+    "expected": [
+      {
+        "record_type": "message",
+        "provider": "chatgpt",
+        "account": "personal",
+        "conversation_id": "language-plan",
+        "record_id": "reading"
+      },
+      {
+        "record_type": "message",
+        "provider": "claude",
+        "account": "personal",
+        "conversation_id": "language-review",
+        "record_id": "practice"
+      }
+    ]
+  },
+  {
+    "question": "What did the alternative cloud branch propose?",
+    "query": "\"cloud storage\"",
+    "expected": [
+      {
+        "record_type": "message",
+        "provider": "chatgpt",
+        "account": "personal",
+        "conversation_id": "alternatives",
+        "record_id": "cloud"
+      }
+    ]
+  },
+  {
+    "question": "What is my saved writing preference?",
+    "query": "\"plain English\"",
+    "expected": [
+      {
+        "record_type": "memory",
+        "provider": "example",
+        "account": "personal",
+        "conversation_id": null,
+        "record_id": "style"
+      }
+    ]
+  },
+  {
+    "question": "What was the final notebook decision in the long answer?",
+    "query": "cedar AND notebook",
+    "expected": [
+      {
+        "record_type": "message",
+        "provider": "claude",
+        "account": "personal",
+        "conversation_id": "long-plan",
+        "record_id": "decision"
+      }
+    ]
+  },
+  {
+    "question": "What storage did we choose for the work account?",
+    "query": "archive AND hosted",
+    "expected": [
+      {
+        "record_type": "message",
+        "provider": "chatgpt",
+        "account": "work",
+        "conversation_id": "archive-design",
+        "record_id": "storage"
+      }
+    ],
+    "filters": {
+      "providers": [
+        "chatgpt"
+      ],
+      "accounts": [
+        "work"
+      ]
+    }
+  },
+  {
+    "question": "Can this archive run disconnected?",
+    "query": "disconnected",
+    "expected": [
+      {
+        "record_type": "message",
+        "provider": "chatgpt",
+        "account": "personal",
+        "conversation_id": "archive-design",
+        "record_id": "storage"
+      }
+    ],
+    "notes": "Expected keyword gap: the source says offline, not disconnected."
+  },
+  {
+    "question": "What is the next step for Orchid?",
+    "query": "Orchid",
+    "expected": [
+      {
+        "record_type": "conversation",
+        "provider": "chatgpt",
+        "account": "personal",
+        "conversation_id": "orchid",
+        "record_id": "orchid"
+      }
+    ],
+    "notes": "Title-only match: retrieve this conversation to read the next-step message."
+  },
+  {
+    "question": "Did we discuss zeppelins?",
+    "query": "zeppelin*",
+    "expected": []
+  }
+]

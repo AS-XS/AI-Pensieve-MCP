@@ -1,0 +1,184 @@
+[
+  {
+    "record_type": "message",
+    "provider": "chatgpt",
+    "account": "personal",
+    "conversation_id": "archive-design",
+    "record_id": "storage",
+    "text": "Decision: keep the archive offline in SQLite. No hosted database.",
+    "title": "Archive storage",
+    "created_at": "2026-01-01T12:00:00Z"
+  },
+  {
+    "record_type": "message",
+    "provider": "chatgpt",
+    "account": "personal",
+    "conversation_id": "backup-plan",
+    "record_id": "old",
+    "text": "Backup decision: make a manual copy every month.",
+    "title": "Backup policy",
+    "created_at": "2026-01-02T12:00:00Z"
+  },
+  {
+    "record_type": "message",
+    "provider": "claude",
+    "account": "personal",
+    "conversation_id": "backup-revision",
+    "record_id": "new",
+    "text": "Revised backup decision: copy the archive every Friday to an external drive.",
+    "title": "Backup revision",
+    "created_at": "2026-02-10T12:00:00Z"
+  },
+  {
+    "record_type": "message",
+    "provider": "chatgpt",
+    "account": "personal",
+    "conversation_id": "language-plan",
+    "record_id": "reading",
+    "text": "French reading practice: read a short article and record useful phrases.",
+    "title": "Language study",
+    "created_at": "2026-01-01T12:00:00Z"
+  },
+  {
+    "record_type": "message",
+    "provider": "claude",
+    "account": "personal",
+    "conversation_id": "language-review",
+    "record_id": "practice",
+    "text": "French reading practice: revisit the saved phrases next week.",
+    "title": "Language review",
+    "created_at": "2026-01-01T12:00:00Z"
+  },
+  {
+    "record_type": "message",
+    "provider": "chatgpt",
+    "account": "personal",
+    "conversation_id": "alternatives",
+    "record_id": "root",
+    "text": "Compare local and hosted storage options.",
+    "title": "Alternative designs",
+    "created_at": "2026-01-01T12:00:00Z"
+  },
+  {
+    "record_type": "message",
+    "provider": "chatgpt",
+    "account": "personal",
+    "conversation_id": "alternatives",
+    "record_id": "local",
+    "text": "The local option uses a disk file.",
+    "title": "Alternative designs",
+    "created_at": "2026-01-01T12:00:00Z",
+    "parent_source_id": "root"
+  },
+  {
+    "record_type": "message",
+    "provider": "chatgpt",
+    "account": "personal",
+    "conversation_id": "alternatives",
+    "record_id": "cloud",
+    "text": "The alternate branch proposes cloud storage.",
+    "title": "Alternative designs",
+    "created_at": "2026-01-01T12:00:00Z",
+    "parent_source_id": "root"
+  },
+  {
+    "record_type": "message",
+    "provider": "claude",
+    "account": "personal",
+    "conversation_id": "long-plan",
+    "record_id": "decision",
+    "text": "Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Background discussion about project planning. Final decision: use a cedar notebook for field notes.",
+    "title": "Long planning answer",
+    "created_at": "2026-01-01T12:00:00Z"
+  },
+  {
+    "record_type": "message",
+    "provider": "chatgpt",
+    "account": "personal",
+    "conversation_id": "orchid",
+    "record_id": "milestone",
+    "text": "Finish the instrument calibration before collecting the next sample.",
+    "title": "Orchid experiment",
+    "created_at": "2026-01-01T12:00:00Z"
+  },
+  {
+    "record_type": "memory",
+    "provider": "example",
+    "account": "personal",
+    "conversation_id": null,
+    "record_id": "style",
+    "text": "Use plain English and short paragraphs.",
+    "title": "Writing preference",
+    "created_at": "2026-01-01T12:00:00Z"
+  },
+  {
+    "record_type": "message",
+    "provider": "chatgpt",
+    "account": "work",
+    "conversation_id": "archive-design",
+    "record_id": "storage",
+    "text": "The work archive uses a hosted database with nightly backups.",
+    "title": "Work storage",
+    "created_at": "2026-01-01T12:00:00Z"
+  },
+  {
+    "record_type": "message",
+    "provider": "claude",
+    "account": "personal",
+    "conversation_id": "distractor-0",
+    "record_id": "note-0",
+    "text": "SQLite query syntax uses SELECT.",
+    "title": "Unrelated note",
+    "created_at": "2026-01-01T12:00:00Z"
+  },
+  {
+    "record_type": "message",
+    "provider": "claude",
+    "account": "personal",
+    "conversation_id": "distractor-1",
+    "record_id": "note-1",
+    "text": "An archive can hold photographs.",
+    "title": "Unrelated note",
+    "created_at": "2026-01-01T12:00:00Z"
+  },
+  {
+    "record_type": "message",
+    "provider": "claude",
+    "account": "personal",
+    "conversation_id": "distractor-2",
+    "record_id": "note-2",
+    "text": "French bread requires flour.",
+    "title": "Unrelated note",
+    "created_at": "2026-01-01T12:00:00Z"
+  },
+  {
+    "record_type": "message",
+    "provider": "claude",
+    "account": "personal",
+    "conversation_id": "distractor-3",
+    "record_id": "note-3",
+    "text": "Cloud formations may indicate rain.",
+    "title": "Unrelated note",
+    "created_at": "2026-01-01T12:00:00Z"
+  },
+  {
+    "record_type": "message",
+    "provider": "claude",
+    "account": "personal",
+    "conversation_id": "distractor-4",
+    "record_id": "note-4",
+    "text": "A Friday meeting discusses staffing.",
+    "title": "Unrelated note",
+    "created_at": "2026-01-01T12:00:00Z"
+  },
+  {
+    "record_type": "message",
+    "provider": "claude",
+    "account": "personal",
+    "conversation_id": "distractor-5",
+    "record_id": "note-5",
+    "text": "A notebook computer needs a battery.",
+    "title": "Unrelated note",
+    "created_at": "2026-01-01T12:00:00Z"
+  }
+]
