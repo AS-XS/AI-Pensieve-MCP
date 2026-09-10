@@ -18,8 +18,9 @@ checklist, not a security certification.
 - [x] Review all root Markdown and public documentation against implementation and official sources; record corrections and verification limits in [documentation audit](DOCUMENTATION_AUDIT.md).
 - [ ] Confirm successful Ubuntu/Windows CI runs on Python 3.10 and 3.13; configuration alone is not platform validation.
 - [x] Review intended source files and local Git history for private material before the initial upload; publish a clean initial history with a GitHub noreply author address. This bounded review is not a secret-detection guarantee.
-- [ ] Commit the intended release and test a clean clone.
-- [ ] Validate a fresh dependency installation and set up a chosen AI client from that release.
+- [x] Test a clean clone of the initial source commit on macOS/Python 3.13: 79 tests and the real STDIO demo passed; retrieval evaluation reproduced its documented lexical-search limitation.
+- [x] Validate a fresh dependency installation from requirements.txt in that clone, including pip check.
+- [ ] Set up a chosen AI client from the published source.
 - [ ] Record app name, version, OS, registration, and successful archive tool calls before promoting a documented configuration to tested integration support. The SDK demo does not validate third-party apps.
 - [x] Select [AI Pensieve MCP](https://github.com/AS-XS/AI-Pensieve-MCP), link the README download route, and configure the local Git origin.
 - [ ] Publish the reviewed release to the selected repository; remote configuration does not publish local changes.

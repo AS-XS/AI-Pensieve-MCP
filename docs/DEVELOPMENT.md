@@ -38,6 +38,14 @@ enumerated eight conversations across three pages, searched eight sources, and
 resolved original-message evidence from seven sources. Local Markdown file
 links also resolved within the source copy.
 
+On 2026-09-10, a clean Git clone of the initial source commit was tested on
+macOS/Python 3.13 in a directory containing spaces. A new virtual environment
+installed requirements.txt without using the package cache; pip check found
+no dependency conflicts. All 79 tests and the real STDIO demo passed. The
+retrieval evaluation found 9 of 10 positive cases and returned no results for
+the negative case, reproducing the documented synonym-search limitation.
+This does not validate an external AI application's setup or remote CI.
+
 See [retrieval evaluation](RETRIEVAL_EVALUATION.md) for scoring and limitations,
 [MCP tools](MCP_TOOLS.md) for interface behavior, and
 [release readiness](OPEN_SOURCE_READINESS.md) for publication checks.
