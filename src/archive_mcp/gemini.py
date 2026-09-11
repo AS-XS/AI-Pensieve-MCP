@@ -85,7 +85,7 @@ def activity_time(value):
 
 def import_activity(connection, source, account):
     parser = ActivityParser()
-    parser.feed(source.read_text(encoding="utf-8"))
+    parser.feed(source.read_text(encoding="utf-8-sig"))
     source_account = account_id(connection, "gemini", account)
     entries = sorted(
         (activity_time(entry["date"]), entry) for entry in parser.entries
@@ -130,7 +130,7 @@ def import_activity(connection, source, account):
 
 
 def import_notebook(connection, source, account):
-    data = json.loads(source.read_text(encoding="utf-8"))
+    data = json.loads(source.read_text(encoding="utf-8-sig"))
     created_at = data["metadata"]["createTime"]
     source_account = account_id(connection, "notebooklm", account)
     upsert_memory(

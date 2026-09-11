@@ -52,7 +52,7 @@ def messages(rows):
 
 def import_file(connection, source, account="default"):
     source = Path(source)
-    rows = [json.loads(line) for line in source.read_text(encoding="utf-8").splitlines()]
+    rows = [json.loads(line) for line in source.read_text(encoding="utf-8-sig").splitlines()]
     metadata = next(row["payload"] for row in rows if row.get("type") == "session_meta")
     selected = list(messages(rows))
     initialize(connection)

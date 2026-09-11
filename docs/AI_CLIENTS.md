@@ -41,8 +41,12 @@ executed in this review.
 
 ## Codex CLI and desktop
 
-**Status: documented configuration; current app integration unverified.** Earlier
-local registration is recorded, but the SDK demo is not a Codex app test.
+**Status: Codex CLI 0.142.2 tested on macOS 26.6.2; desktop and IDE integration
+remain unverified.** A temporary command-line configuration completed status,
+search, original-message retrieval, and cross-reference calls on synthetic data
+on 2026-09-10. See the [verification record](CLIENT_VERIFICATION.md#codex-cli).
+Permanent registration commands and desktop setup below remain documented
+recipes; those exact setup flows were not executed in that test.
 
 On macOS or Linux:
 
@@ -233,7 +237,7 @@ all projects. A project-only configuration goes in `.cursor/mcp.json`.
 Copy the `mcpServers` JSON entry shown in the Claude Desktop section and add
 `"type": "stdio"` inside the `ai-pensieve-mcp` server object, alongside
 `command`. Cursor's current field table marks it required. Restart Cursor after
-saving, then check that `ai-pensieve-mcp` and its eleven tools appear.
+saving, then check that `ai-pensieve-mcp` and its twelve tools appear.
 
 ## Gemini CLI
 

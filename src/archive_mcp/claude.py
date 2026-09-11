@@ -7,7 +7,7 @@ from .importing import account_id, conversation_id, upsert_message
 
 def import_file(connection, source, account="default"):
     source = Path(source)
-    conversations = json.loads(source.read_text(encoding="utf-8"))
+    conversations = json.loads(source.read_text(encoding="utf-8-sig"))
     initialize(connection)
 
     with connection:

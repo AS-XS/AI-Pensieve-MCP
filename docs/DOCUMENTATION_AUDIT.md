@@ -1,5 +1,20 @@
 # Documentation audit — 2026-09-09
 
+Later client/platform results are recorded in [client verification](CLIENT_VERIFICATION.md).
+The dated audit sections below retain their original verification scope.
+
+The 2026-09-11 implementation follow-up fixes the empty-native-session,
+missing-selected-path, and UTF-8 BOM issues recorded below, and adds
+[bounded saved-context/message traversal](ARCHIVE_SWEEP.md). Historical
+observations below describe the earlier revision, not current failures.
+
+The later 2026-09-11 ZCode follow-up adds an observed-format SQLite importer,
+custom-folder instructions, and explicit separation of official export contracts
+from local schema observations. Six new synthetic tests pass (93 total), and a
+local source was reconciled against imported IDs and retrieved through MCP.
+The owner also changed the current license from MIT to Apache-2.0; earlier
+license/publication statements below describe their original audit date.
+
 Reviewed the full text of all 20 existing root Markdown files and public guides,
 including local planning instructions and the dated development log. Checked
 current implementation claims against source, schemas, fixtures, and tests;

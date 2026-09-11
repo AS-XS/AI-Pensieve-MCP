@@ -3,7 +3,8 @@
 The demo imports only the generated fixtures committed in `fixtures/` into a
 temporary directory, checks the SQLite and FTS indexes, and starts the real MCP
 server as a local subprocess. A bundled test client pages conversations,
-compares evidence across providers, and retrieves the original messages.
+compares evidence across providers, retrieves the original messages, and pages
+through messages plus saved context using the bounded sweep tool.
 It never reads `imports/`, native stores, the configured runtime database, or
 private source exports. Its database and logs are temporary and cleaned up on
 normal exit or a handled error; forced termination can leave temporary files.

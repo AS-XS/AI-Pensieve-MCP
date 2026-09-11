@@ -1,5 +1,8 @@
 # Contributing
 
+This project is licensed under [Apache License 2.0](LICENSE).
+Contributions are submitted under that license unless explicitly stated otherwise.
+
 Use synthetic fixtures for tests. Do not commit provider exports, private
 databases, logs, source maps, local configuration, or private retrieval labels.
 

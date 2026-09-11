@@ -74,6 +74,10 @@ ask it to check archive status, then try:
 > Find discussions of my project across different AI providers and compare
 > the decisions recorded in them.
 
+[More example prompts and what each tool does](docs/EXAMPLE_PROMPTS.md).
+
 The AI searches the imported snapshot; new conversations appear after another
 import or refresh. For older archives, follow the
 [upgrade instructions](docs/MCP_TOOLS.md#upgrading-an-existing-archive).
+
+Licensed under [Apache License 2.0](LICENSE).

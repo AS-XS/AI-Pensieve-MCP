@@ -7,7 +7,7 @@ from .importing import account_id, upsert_memory
 
 def import_file(connection, source, account="default"):
     source = Path(source)
-    document = json.loads(source.read_text(encoding="utf-8"))
+    document = json.loads(source.read_text(encoding="utf-8-sig"))
     initialize(connection)
 
     with connection:

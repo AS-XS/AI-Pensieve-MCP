@@ -11,7 +11,7 @@ def response_time(response):
 
 def import_file(connection, source, account="default"):
     source = Path(source)
-    conversations = json.loads(source.read_text(encoding="utf-8")).get("conversations", [])
+    conversations = json.loads(source.read_text(encoding="utf-8-sig")).get("conversations", [])
     initialize(connection)
 
     with connection:

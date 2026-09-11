@@ -75,7 +75,7 @@ class MCPTest(unittest.TestCase):
                 self.assertEqual({tool.name for tool in tools}, {
                     "archive_status", "list_sources", "search_history",
                     "get_conversation", "get_message_context", "get_message", "get_memory",
-                    "search_conversations", "cross_reference", "get_conversation_matches", "list_conversations",
+                    "search_conversations", "cross_reference", "get_conversation_matches", "list_conversations", "sweep_archive",
                 })
                 self.assertTrue(all(tool.annotations.read_only_hint for tool in tools))
                 self.assertTrue(all(tool.annotations.open_world_hint is False for tool in tools))

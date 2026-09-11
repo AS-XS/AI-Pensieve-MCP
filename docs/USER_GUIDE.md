@@ -26,8 +26,41 @@ $env:PYTHONPATH = (Resolve-Path src).Path
 
 Repeat for each account folder and label. Extract ZIP files before importing.
 The importer detects supported structures inside nested folders.
-Automatic discovery can report zero candidates for a missing path; it does not
-always raise FileNotFoundError. Check the selected path and report counts.
+Missing selected paths now fail with FileNotFoundError; an existing empty folder
+still imports successfully with zero candidates. Supported text exports accept
+UTF-8 with or without a byte-order mark. Claude Code and Antigravity sessions
+with no visible dialogue produce a `no_indexable_records` warning and add no
+conversation; previously imported dialogue is preserved.
+
+## Choose your own source folders
+
+To use a folder in its existing location, no copy into `imports/` is needed.
+For example, on macOS/Linux:
+
+~~~sh
+PYTHONPATH=src .venv/bin/python -m archive_mcp scan "/path/to/my AI exports"
+PYTHONPATH=src .venv/bin/python -m archive_mcp import-auto runtime/archive.sqlite "/path/to/my AI exports" --account personal
+~~~
+
+On Windows PowerShell:
+
+~~~powershell
+$env:PYTHONPATH = (Resolve-Path src).Path
+.\.venv\Scripts\python.exe -m archive_mcp scan "D:\My AI exports"
+.\.venv\Scripts\python.exe -m archive_mcp import-auto runtime\archive.sqlite "D:\My AI exports" --account personal
+~~~
+
+Both commands accept multiple files or folders. Folder traversal is recursive;
+`scan` reports recognized formats without importing. `import-auto` reads the
+selected sources in place and writes normalized records into the archive.
+It does not move or delete source files. Use the same account label on repeat
+imports. Different providers may share a folder, but different accounts should
+have separate import commands. You can also save a chosen path in an `exports`
+entry in the [refresh configuration](#configure-refreshes).
+
+Path selection is general; parsing remains format-specific. Renaming an
+unsupported file or placing it in an official app folder does not make its
+contents supported. See the [format evidence and extension policy](COMPATIBILITY.md#importer-evidence-and-custom-locations).
 
 ## Check imports
 
@@ -80,8 +113,9 @@ candidates **per source** and showing up to five evidence snippets per source.
 Each bundle includes dates, stable IDs, and whether more matches may exist.
 Sources with no matches are explicit. Check `sources_unexamined`; use
 `--provider` and `--account` to search sources skipped by the source limit.
-A complete archive sweep still requires paging `list_conversations` and reading
-evidence; cross-reference is bounded search, not an automatic full read.
+For keyword-free reading of messages and saved context, page through
+[`sweep_archive`](ARCHIVE_SWEEP.md). Cross-reference remains bounded keyword
+search. A sweep covers its selected scope only after every page is read.
 
 ## Configure refreshes
 
@@ -172,9 +206,9 @@ Finish writing sessions before importing them. In particular, close Antigravity
 before reading its native database: its adapter uses SQLite immutable mode and
 does not provide a consistent view of a database another process is changing.
 See the [SQLite immutable-mode contract](https://www.sqlite.org/uri.html).
-Claude Code and Antigravity sessions with no retained dialogue currently fail
-instead of producing an empty conversation. Such a failure stops the batch;
-earlier completed files remain imported.
+Claude Code and Antigravity sessions with no retained dialogue are skipped with
+a `no_indexable_records` warning. Existing imported dialogue is preserved.
+Other import failures still stop the batch; earlier completed files remain imported.
 
 ## Make shortcuts
 

@@ -12,7 +12,7 @@ client: DeepSeek and Grok models can run inside several harnesses, while
 DeepSeek Harness and Grok Build have their own session formats.
 
 Non-OpenAI client references were rechecked on 2026-09-10; the OpenAI reference
-was checked on 2026-09-09. Status has a specific meaning:
+was rechecked alongside the CLI integration test on 2026-09-10. Status has a specific meaning:
 
 - **Tested:** this archive was exercised through the named client, with scope
   and date recorded. A generic SDK test does not qualify a third-party app.
@@ -30,8 +30,8 @@ of every current export variant.
 
 | Client/surface | Archive integration evidence | Setup and official contract |
 | --- | --- | --- |
-| Bundled SDK STDIO demo | Tested on macOS/Python 3.13, 2026-09-09; all 11 tools discovered, selected retrieval flows exercised | [Demo scope](DEMO.md) |
-| Codex CLI | Documented / end-to-end app use unverified; earlier local registration recorded | [Setup](AI_CLIENTS.md#codex-cli-and-desktop), [official](https://learn.chatgpt.com/docs/extend/mcp?surface=cli) |
+| Bundled SDK STDIO demo | Current 12-tool demo tested locally on macOS/Python 3.13, 2026-09-11; previous 11-tool revision passed Ubuntu/Windows CI on Python 3.10/3.13 | [Demo scope](DEMO.md), [CI evidence](CLIENT_VERIFICATION.md#github-ci) |
+| Codex CLI | Tested: 0.142.2 on macOS 26.6.2, 2026-09-10; temporary configuration, four explicit retrieval calls on synthetic data | [Verification](CLIENT_VERIFICATION.md#codex-cli), [setup](AI_CLIENTS.md#codex-cli-and-desktop), [official](https://learn.chatgpt.com/docs/extend/mcp?surface=cli) |
 | Codex-compatible desktop | Documented / current app integration unverified | [Setup](AI_CLIENTS.md#codex-cli-and-desktop), [official](https://learn.chatgpt.com/docs/extend/mcp?surface=cli) |
 | Codex IDE extension | Documented / untested | [Setup](AI_CLIENTS.md#codex-cli-and-desktop), [official](https://learn.chatgpt.com/docs/extend/mcp?surface=cli) |
 | Claude Code | Documented / untested; earlier CLI syntax check is not an integration test | [Setup](AI_CLIENTS.md#claude-code), [official](https://code.claude.com/docs/en/mcp) |
@@ -96,6 +96,32 @@ See [export instructions](EXPORT_GUIDE.md) for downloads and file selection.
 | Antigravity local sessions | Completed visible dialogue | Verified with the native local database and synthetic tests |
 | OpenCode JSON export | User dialogue and visible assistant text | Verified against the official export contract and synthetic tests |
 | Qwen Code JSON/JSONL export and native session | User dialogue and visible assistant text | Verified against the official export implementation and synthetic tests |
+| Z.ai ZCode native SQLite | Visible user prompts and assistant text | Observed ZCode 3.11.2 on macOS, one local session, plus synthetic tests; closed database only |
+
+## Importer evidence and custom locations
+
+Not every importer comes from an official storage specification. Codex,
+Claude Code, Antigravity, and ZCode native readers are grounded in observed
+local stores and synthetic tests. OpenCode and Qwen Code exports were checked
+against official export implementations/contracts and synthetic fixtures.
+The confidence column above separates those evidence levels.
+
+A documented directory tells us where to discover files. It does not define
+message boundaries, speaker roles, timestamps, branches, or which fields are
+reasoning, tools, and credentials. These mappings need a separate adapter.
+An app can change its schema while keeping the same directory.
+
+Users already control source locations: `scan` and `import-auto` accept files
+or recursively searched folders anywhere readable, and refresh configuration
+can retain those selected paths. Native `sync-local` also has root overrides
+for its four existing providers. No source needs to be moved into the project.
+
+The extension approach is a shared discovery/import/reporting pipeline with
+small format-specific adapters. Add a recognizable schema, explicit field and
+exclusion mapping, synthetic fixtures, and import/retrieval checks for each new
+source. Arbitrary JSON, SQLite, Markdown, or an app's name is not enough to
+infer a correct conversation history. ZCode MCP-client setup has not been
+tested by adding its history importer.
 
 ## History imports not supported
 
@@ -144,6 +170,7 @@ remain searchable. See the [privacy guide](privacy/README.md).
 | Antigravity | Completed visible user/assistant steps | Planning, tools, lifecycle data, incomplete steps |
 | OpenCode | Visible user/assistant text | Reasoning, tools, file parts, execution metadata |
 | Qwen Code | Visible user/assistant text | Reasoning, tools, execution records, structured file/path/attachment parts |
+| ZCode | Non-synthetic visible user prompts and assistant text parts | Reasoning, tools, files, synthetic/ignored text parts, runtime reminders, timeline events, request logs and settings |
 
 Copied material inside otherwise imported text is not removed merely because
 it resembles one of these excluded metadata fields. Export formats can change;
@@ -156,6 +183,14 @@ representative sample. We do not guess an undocumented schema and label it as
 support.
 
 ### Best next targets
+
+Additional structured candidates, still **unsupported**: Gemini CLI documents
+native sessions at `~/.gemini/tmp/<project_hash>/chats/` in its
+[session guide](https://geminicli.com/docs/cli/session-management/); VS Code
+documents a JSON export through **Chat: Export Chat...** in its
+[session guide](https://code.visualstudio.com/docs/agents/run/sessions/manage-sessions).
+Check their actual schemas and representative fixtures before implementing
+adapters. Gemini CLI sessions are distinct from supported Gemini Apps Takeout.
 
 1. **Grok Build:** officially offers `/export` and stores local sessions under
    `~/.grok/`. Add an adapter after checking one exported session or native

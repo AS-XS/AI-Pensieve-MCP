@@ -17,6 +17,7 @@ from .grok import import_file as import_grok
 from .memories import import_file as import_memories
 from .opencode import import_file as import_opencode
 from .qwen_code import import_file as import_qwen_code
+from .zcode import import_file as import_zcode, recognized as recognized_zcode
 
 
 IMPORTERS = {
@@ -33,6 +34,7 @@ IMPORTERS = {
     "notebooklm": import_gemini,
     "opencode": import_opencode,
     "qwen-code": import_qwen_code,
+    "zcode": import_zcode,
 }
 CANDIDATE_SUFFIXES = {".db", ".html", ".json", ".jsonl", ".sqlite", ".sqlite3"}
 
@@ -90,7 +92,7 @@ def json_format(path):
 
 def jsonl_format(path):
     try:
-        with path.open(encoding="utf-8") as lines:
+        with path.open(encoding="utf-8-sig") as lines:
             for _, line in zip(range(50), lines):
                 row = json.loads(line)
                 if not isinstance(row, dict):
@@ -126,6 +128,8 @@ def sqlite_format(path):
             tables = {row[0] for row in connection.execute(
                 "SELECT name FROM sqlite_master WHERE type = 'table'"
             )}
+            if recognized_zcode(connection):
+                return "zcode"
         if {"trajectory_meta", "trajectory_metadata_blob", "steps"} <= tables:
             return "antigravity"
     except sqlite3.DatabaseError:
@@ -143,7 +147,7 @@ def detect(path):
         if path.name == "MyActivity.html":
             return "gemini"
         try:
-            with path.open(encoding="utf-8") as source:
+            with path.open(encoding="utf-8-sig") as source:
                 text = source.read(1_000_000)
         except UnicodeDecodeError:
             return None
@@ -159,6 +163,7 @@ def classify(roots):
     ignored = []
     seen = set()
     for root in map(Path, roots):
+        root.stat()  # A missing selected root is not an empty folder.
         paths = [root] if root.is_file() else root.rglob("*")
         for path in paths:
             if not path.is_file() or path.suffix.lower() not in CANDIDATE_SUFFIXES:

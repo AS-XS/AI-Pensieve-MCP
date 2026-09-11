@@ -27,7 +27,7 @@ def project_items(project):
 
 def import_file(connection, source, account="default"):
     source = Path(source)
-    data = json.loads(source.read_text(encoding="utf-8"))
+    data = json.loads(source.read_text(encoding="utf-8-sig"))
     items = list(memory_items(data) if isinstance(data, list) else project_items(data))
     initialize(connection)
 

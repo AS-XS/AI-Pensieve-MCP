@@ -67,8 +67,6 @@ def import_file(connection, source, account="default"):
     source = Path(source)
     uri = source.resolve().as_uri() + "?mode=ro&immutable=1"
     with closing(sqlite3.connect(uri, uri=True)) as native:
-        trajectory_id = native.execute("SELECT cascade_id FROM trajectory_meta").fetchone()[0]
-        project = workspace(native)
         selected = []
         for index, step_type, payload in native.execute(
             "SELECT idx, step_type, step_payload FROM steps WHERE status = 3 ORDER BY idx"
@@ -76,8 +74,13 @@ def import_file(connection, source, account="default"):
             message = step_text(step_type, payload)
             if message:
                 selected.append((index, *message, step_time(payload)))
+        if selected:
+            trajectory_id = native.execute("SELECT cascade_id FROM trajectory_meta").fetchone()[0]
+            project = workspace(native)
 
     initialize(connection)
+    if not selected:
+        return {"conversations": 0, "nodes": 0}
     with connection:
         source_account = account_id(connection, "antigravity", account)
         key = conversation_id(

@@ -168,6 +168,37 @@ execution records, and structured file/attachment parts are excluded.
 
 ## Existing local coding sessions
 
+### ZCode
+
+The observed **Z.ai ZCode 3.11.2 on macOS** stores its native session database
+at `~/.zcode/cli/db/db.sqlite`. This is an observed local schema, not a published
+export contract. The [official FAQ](https://zcode.z.ai/en/docs/qa) documents the
+`.zcode/cli` configuration area but does not specify this database schema.
+
+Quit ZCode before importing so the database has finished writing. Then run:
+
+~~~sh
+PYTHONPATH=src .venv/bin/python -m archive_mcp import-zcode runtime/archive.sqlite "$HOME/.zcode/cli/db/db.sqlite" --account personal
+~~~
+
+Replace the source path with your own location if needed. A selected folder
+containing this recognized database also works with `scan` and `import-auto`.
+The importer reads the source without modifying it and refuses a nonempty WAL
+or journal sidecar, which can contain uncheckpointed updates. Live database
+import is not supported; do not manually delete those sidecars.
+
+The adapter retains non-synthetic visible user prompts and assistant text,
+including visible intermediate assistant replies. It excludes reasoning,
+tools, file parts, synthetic reminders, timeline events, and other metadata.
+It does not import request logs, credentials, settings, terminal output, or the
+desktop task index. The observed one-session database and synthetic tests have
+been checked; other ZCode versions and platforms remain unverified.
+
+`sync-local` still selects its original four providers; ZCode is imported
+explicitly or through a selected `exports` path in the refresh configuration.
+
+### Other supported native stores
+
 Codex, Claude Code, Antigravity, and Qwen Code can be imported from supported
 local session stores without requesting an account export. Choose providers
 and locations using the [native-session guide](USER_GUIDE.md#native-coding-sessions).
@@ -196,8 +227,7 @@ screenshots, shared-chat URLs, or prose copied from an AI. Keep an unsupported
 export unchanged for a future adapter. Metadata exclusions do not scrub secrets
 inside message text; see [privacy and data flow](privacy/README.md).
 
-Text inputs should be UTF-8. BOM handling is currently adapter-specific:
-OpenCode and Qwen's readers accept a UTF-8 BOM, but several other JSON readers
-do not, even when automatic JSON detection recognizes the file. A recognized
-format therefore does not guarantee a successful import. Preserve the original
-and use a UTF-8 copy without a BOM if an affected adapter rejects it.
+Supported text inputs should be UTF-8, with or without a byte-order mark (BOM).
+Detection and import now handle the BOM consistently. A recognized format still
+does not guarantee that every record is valid; consult the import report for
+malformed or unsupported content, and preserve the original export unchanged.

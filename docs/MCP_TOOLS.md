@@ -40,8 +40,13 @@ the next call:
 | `get_message_context` | Read one message with graph-aware ancestors and descendants, including branches. | provider, account, conversation ID, message ID, `before`, `after` |
 | `get_message` | Read exact message text in bounded character pages. | provider, account, conversation ID, message ID, `offset`, `limit` |
 | `get_memory` | Read one saved memory or context record. | provider, account, memory ID |
+| `sweep_archive` | Read messages and saved context without keywords under a page budget. | source/date filters, `cursor`, `max_records`, `max_chars` |
 
-All eleven tools are read-only. They do not import, edit, delete, or re-index data.
+The additional `sweep_archive` tool reads bounded text pages without keywords,
+including saved context. See [archive sweep](ARCHIVE_SWEEP.md) for its arguments,
+continuation, budgets, and coverage contract.
+
+All twelve tools are read-only. They do not import, edit, delete, or re-index data.
 
 Search/enumeration filters use plural `providers` and `accounts` lists.
 `list_sources` and direct record lookups instead use singular `provider` and
@@ -58,8 +63,8 @@ local SQLite database for import diagnostics.
 - Message and memory previews contain at most 4,000 source characters, followed
   by an ellipsis when `truncated` is true. Exact `get_message` pages contain at
   most 4,000 characters and never add an ellipsis.
-  Saved memories have no continuation tool yet; `get_message` cannot retrieve
-  the remainder of a truncated `get_memory` result.
+  `get_message` cannot retrieve the remainder of a truncated `get_memory`
+  result; `sweep_archive` can read complete saved-context text across pages.
 - Message context accepts up to 10 ancestors and 10 descendant levels, with a
   maximum of 50 returned descendants.
 - `search_history` accepts SQLite FTS5 syntax, including quoted phrases,
@@ -219,7 +224,7 @@ Status date ranges come from message and saved-context timestamps, not
 conversation creation dates. Message counts include empty-text nodes, whereas
 conversation reads omit them. `list_conversations` covers conversation rows
 only: saved memories, projects, and notebook metadata are not enumerated.
-There is no exhaustive saved-context listing/continuation API yet.
+Use `sweep_archive` for saved-context traversal and text continuation.
 
 Status, enumeration, and cross-reference render dates as ISO UTC strings;
 ordinary search and direct record reads return numeric Unix seconds or null.

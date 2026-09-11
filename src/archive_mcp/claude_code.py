@@ -16,14 +16,14 @@ def message_text(row):
             return ""
         text = content.strip() if isinstance(content, str) else "\n\n".join(
             part.get("text", "").strip()
-            for part in content
+            for part in (content or [])
             if part.get("type") == "text" and part.get("text", "").strip()
         )
         return "" if text.startswith(COMMAND_PREFIXES) else text
     if row.get("type") == "assistant" and message.get("stop_reason") == "end_turn":
         return "\n\n".join(
             part.get("text", "").strip()
-            for part in content
+            for part in (content or [])
             if part.get("type") == "text" and part.get("text", "").strip()
         )
     return ""
@@ -35,7 +35,7 @@ def import_file(connection, source, account="default"):
     seen = set()
     session_id = cwd = None
 
-    with source.open(encoding="utf-8") as lines:
+    with source.open(encoding="utf-8-sig") as lines:
         for line in lines:
             row = json.loads(line)
             session_id = session_id or row.get("sessionId")
@@ -46,6 +46,8 @@ def import_file(connection, source, account="default"):
                 selected.append((row, text))
 
     initialize(connection)
+    if not selected:
+        return {"conversations": 0, "nodes": 0}
     with connection:
         source_account = account_id(connection, "claude-code", account)
         key = conversation_id(

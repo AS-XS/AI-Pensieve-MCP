@@ -8,7 +8,7 @@ from .sync import default_roots, sync_local
 
 
 def refresh_archive(connection, config):
-    data = json.loads(Path(config).read_text(encoding="utf-8"))
+    data = json.loads(Path(config).read_text(encoding="utf-8-sig"))
     initialize(connection)
     counts = Counter(files=0)
     formats = Counter()

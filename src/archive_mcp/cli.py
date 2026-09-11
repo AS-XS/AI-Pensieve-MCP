@@ -24,6 +24,8 @@ from .opencode import import_file as import_opencode
 from .qwen_code import import_file as import_qwen_code
 from .refresh import refresh_archive
 from .sync import LOCAL_PROVIDERS, default_roots, sync_local
+from .sweep import sweep_archive
+from .zcode import import_file as import_zcode
 
 
 IMPORTERS = {
@@ -39,6 +41,7 @@ IMPORTERS = {
     "import-memories": import_memories,
     "import-opencode": import_opencode,
     "import-qwen-code": import_qwen_code,
+    "import-zcode": import_zcode,
 }
 def parser():
     root = argparse.ArgumentParser(prog="archive")
@@ -108,6 +111,16 @@ def parser():
     status = commands.add_parser("status")
     status.add_argument("database")
 
+    sweep = commands.add_parser("sweep")
+    sweep.add_argument("database")
+    sweep.add_argument("--cursor")
+    sweep.add_argument("--max-records", type=int, default=20)
+    sweep.add_argument("--max-chars", type=int, default=12000)
+    sweep.add_argument("--provider", action="append", dest="providers")
+    sweep.add_argument("--account", action="append", dest="accounts")
+    sweep.add_argument("--date-from", type=timestamp)
+    sweep.add_argument("--date-to", type=lambda value: timestamp(value, end=True))
+
     enumerate_conversations = commands.add_parser("list-conversations")
     enumerate_conversations.add_argument("database")
     enumerate_conversations.add_argument("--cursor", type=int, default=0)
@@ -171,7 +184,7 @@ def execute(args):
         return
     read_only = args.command in {
         "status", "search", "get-conversation", "get-message-context", "get-message",
-        "get-conversation-matches", "list-conversations", "cross-reference",
+        "get-conversation-matches", "list-conversations", "cross-reference", "sweep",
     }
     with connect(args.database, read_only=read_only) as connection:
         if args.command == "init":
@@ -206,6 +219,11 @@ def execute(args):
             print(json.dumps(import_report(connection, args.limit), indent=2))
         elif args.command == "status":
             print(json.dumps(archive_status(connection), indent=2))
+        elif args.command == "sweep":
+            print(json.dumps(sweep_archive(
+                connection, args.cursor, args.providers, args.accounts,
+                args.date_from, args.date_to, args.max_records, args.max_chars,
+            ), indent=2))
         elif args.command == "list-conversations":
             print(json.dumps(list_conversations(
                 connection, args.limit, args.cursor,

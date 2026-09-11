@@ -74,11 +74,31 @@ async def verify_mcp(database, status):
                 verified.append({**source, "message_id": hit["record_id"]})
             if len(verified) < 2:
                 raise RuntimeError("Expected synthetic evidence from multiple sources.")
+            cursor = None
+            sweep_pages = 0
+            swept = {}
+            while True:
+                page = await call("sweep_archive", {"cursor": cursor, "max_chars": 4000})
+                sweep_pages += 1
+                if page["characters_returned"] > 4000 or sweep_pages > 50:
+                    raise RuntimeError("Synthetic sweep exceeded its budget.")
+                for record in page["records"]:
+                    key = tuple(record[k] for k in (
+                        "record_type", "provider", "account", "conversation_id", "record_id"))
+                    if record["offset"] != swept.get(key, 0):
+                        raise RuntimeError("Synthetic sweep repeated or skipped text.")
+                    swept[key] = record["offset"] + len(record["text"])
+                cursor = page["next_cursor"]
+                if cursor is None:
+                    break
+            if not any(key[0] == "memory" for key in swept):
+                raise RuntimeError("Synthetic sweep missed saved context.")
             return {
                 "ok": True, "transport": "stdio", "tool_count": len(tools),
                 "enumeration_pages": pages, "conversations_enumerated": len(identities),
                 "sources_examined": compared["sources_examined"],
                 "evidence_verified": verified,
+                "sweep_pages": sweep_pages, "sweep_records": len(swept),
             }
 
 

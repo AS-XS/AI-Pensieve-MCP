@@ -95,6 +95,7 @@ remain explicit on every evidence item.
 | Antigravity | trajectory_meta.cascade_id; decoded workspace basename in title | completed steps (status 3), visible types 14/15; node step:idx; preceding retained step as parent; observed protobuf text fields | observed protobuf seconds/nanoseconds |
 | OpenCode | info.id; info.title | message.info.id; parentID when present, otherwise previous retained message; visible text parts | info.time and message.info.time; large numeric values converted from milliseconds |
 | Qwen Code | sessionId; working-directory basename where available | uuid; parentUuid followed through omitted nodes to a visible parent; user/assistant text excluding thought parts | startTime and retained row.timestamp |
+| ZCode | session.id; session.title; local_session kind | message.id for both IDs; visible text parts ordered by sequence/time/id; parentID followed through excluded nodes, missing/unavailable parent becomes null, absent parentID uses previous retained message | session.time_created/time_updated and message.time_created divided by 1000 |
 | Gemini activity | activity-session:START_SECONDS; inferred session title | activity:DATE:user/assistant; sequential parent chain; prompt and exported response | observed English CST dates interpreted as UTC−06:00; gap greater than 60 minutes starts a session |
 | NotebookLM | notebook:metadata.createTime → memory source_id | notebook kind; title stored as title and searchable text | metadata.createTime |
 | Claude project/context | project:UUID; project-document:PROJECT_UUID:DOC_UUID | project description plus prompt_template; each docs entry's filename/content | project/document created_at |
@@ -114,6 +115,15 @@ authenticated session type; ordinary text beginning with that prefix can also
 exclude a session. Codex and Claude Code reconstruct sequential parents rather
 than preserving every native branch. ChatGPT retains all string content.parts
 regardless of role; string content is not necessarily user-visible dialogue.
+
+ZCode maps only the observed visible user_prompt (origin real_user) and
+assistant_response semantic kinds. Synthetic messages and synthetic/ignored
+text parts are omitted. It keeps distinct source IDs even when text repeats.
+Each native session is imported separately; cross-session fork/workflow links
+are not represented. The source database is read only after closing ZCode.
+Imports upsert retained IDs and preserve older canonical rows absent from a
+later source, including sessions that now have no retained text. They do not
+mirror source deletions. No ZCode-specific canonical table is needed.
 
 ## Schema upgrades
 
