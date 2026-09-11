@@ -23,7 +23,8 @@ checklist, not a security certification.
 - [ ] Set up a chosen AI client from the published source.
 - [ ] Record app name, version, OS, registration, and successful archive tool calls before promoting a documented configuration to tested integration support. The SDK demo does not validate third-party apps.
 - [x] Select [AI Pensieve MCP](https://github.com/AS-XS/AI-Pensieve-MCP), link the README download route, and configure the local Git origin.
-- [ ] Publish the reviewed release to the selected repository; remote configuration does not publish local changes.
+- [x] Upload the reviewed initial source to the selected repository and verify its main branch on GitHub (2026-09-10).
+- [ ] Complete remaining release checks and publish a versioned public release. The initial source upload does not certify release readiness or confirm public repository visibility.
 
 A GUI, semantic search, and personal reflection are later milestones. They are
 not necessary to release a useful developer archive.
