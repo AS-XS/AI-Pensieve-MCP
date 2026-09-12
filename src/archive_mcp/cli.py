@@ -25,6 +25,7 @@ from .qwen_code import import_file as import_qwen_code
 from .refresh import refresh_archive
 from .sync import LOCAL_PROVIDERS, default_roots, sync_local
 from .sweep import sweep_archive
+from .survey import survey_archive
 from .zcode import import_file as import_zcode
 
 
@@ -121,6 +122,16 @@ def parser():
     sweep.add_argument("--date-from", type=timestamp)
     sweep.add_argument("--date-to", type=lambda value: timestamp(value, end=True))
 
+    survey = commands.add_parser("survey")
+    survey.add_argument("database")
+    survey.add_argument("--cursor")
+    survey.add_argument("--max-records", type=int, default=50)
+    survey.add_argument("--max-chars", type=int, default=12000)
+    survey.add_argument("--provider", action="append", dest="providers")
+    survey.add_argument("--account", action="append", dest="accounts")
+    survey.add_argument("--date-from", type=timestamp)
+    survey.add_argument("--date-to", type=lambda value: timestamp(value, end=True))
+
     enumerate_conversations = commands.add_parser("list-conversations")
     enumerate_conversations.add_argument("database")
     enumerate_conversations.add_argument("--cursor", type=int, default=0)
@@ -137,6 +148,7 @@ def parser():
     conversation.add_argument("conversation_id")
     conversation.add_argument("--offset", type=int, default=0)
     conversation.add_argument("--limit", type=int, default=20)
+    conversation.add_argument("--newest-first", action="store_true")
 
     context = commands.add_parser("get-message-context")
     context.add_argument("database")
@@ -184,7 +196,7 @@ def execute(args):
         return
     read_only = args.command in {
         "status", "search", "get-conversation", "get-message-context", "get-message",
-        "get-conversation-matches", "list-conversations", "cross-reference", "sweep",
+        "get-conversation-matches", "list-conversations", "cross-reference", "sweep", "survey",
     }
     with connect(args.database, read_only=read_only) as connection:
         if args.command == "init":
@@ -219,8 +231,9 @@ def execute(args):
             print(json.dumps(import_report(connection, args.limit), indent=2))
         elif args.command == "status":
             print(json.dumps(archive_status(connection), indent=2))
-        elif args.command == "sweep":
-            print(json.dumps(sweep_archive(
+        elif args.command in ("sweep", "survey"):
+            reader = sweep_archive if args.command == "sweep" else survey_archive
+            print(json.dumps(reader(
                 connection, args.cursor, args.providers, args.accounts,
                 args.date_from, args.date_to, args.max_records, args.max_chars,
             ), indent=2))
@@ -237,7 +250,7 @@ def execute(args):
         elif args.command == "get-conversation":
             print(json.dumps(get_conversation(
                 connection, args.provider, args.account, args.conversation_id,
-                args.offset, args.limit,
+                args.offset, args.limit, args.newest_first,
             ), indent=2))
         elif args.command == "get-conversation-matches":
             print(json.dumps(get_conversation_matches(

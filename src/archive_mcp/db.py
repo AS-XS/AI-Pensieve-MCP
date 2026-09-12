@@ -667,24 +667,32 @@ def get_memory(connection, provider, account, source_id):
     return message_dict(row)
 
 
-def get_conversation(connection, provider, account, source_id, offset=0, limit=20):
+def get_conversation(connection, provider, account, source_id, offset=0, limit=20, newest_first=False):
     conversation = conversation_row(connection, provider, account, source_id)
     limit = max(1, min(limit, 50))
     offset = max(0, offset)
     rows = connection.execute(
-        """
+        f"""
         SELECT node_source_id, message_source_id, parent_source_id, role, text, created_at
         FROM messages
         WHERE conversation_id = ? AND text <> ''
-        ORDER BY id LIMIT ? OFFSET ?
+        ORDER BY {"created_at DESC, id DESC" if newest_first else "id"} LIMIT ? OFFSET ?
         """,
         (conversation["id"], limit + 1, offset),
     ).fetchall()
+    undated = connection.execute(
+        "SELECT count(*) FROM messages WHERE conversation_id = ? AND text <> '' AND created_at IS NULL",
+        (conversation["id"],),
+    ).fetchone()[0] if newest_first else None
     conversation.pop("id")
     return {
         "conversation": conversation,
         "messages": [message_dict(row) for row in rows[:limit]],
         "next_offset": offset + limit if len(rows) > limit else None,
+        **({"order": "newest_timestamp_first_undated_last", "undated_messages": undated,
+            "recency_note": "Includes all branches and independent roots; later messages do not necessarily supersede earlier ones. "
+                            "Undated messages cannot be placed chronologically. Check other conversations for project updates too."}
+           if newest_first else {}),
     }
 
 

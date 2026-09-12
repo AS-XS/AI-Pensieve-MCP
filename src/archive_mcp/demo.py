@@ -93,12 +93,25 @@ async def verify_mcp(database, status):
                     break
             if not any(key[0] == "memory" for key in swept):
                 raise RuntimeError("Synthetic sweep missed saved context.")
+            cursor = None
+            survey_pages = 0
+            while True:
+                page = await call("survey_archive", {"cursor": cursor, "max_chars": 4000})
+                survey_pages += 1
+                if page["characters_returned"] > 4000 or survey_pages > 50:
+                    raise RuntimeError("Synthetic survey exceeded its page budget.")
+                cursor = page["next_cursor"]
+                if cursor is None:
+                    break
+            if not page["complete"] or any(s["status"] != "complete" for s in page["sources"]):
+                raise RuntimeError("Synthetic survey did not finish its scope.")
             return {
                 "ok": True, "transport": "stdio", "tool_count": len(tools),
                 "enumeration_pages": pages, "conversations_enumerated": len(identities),
                 "sources_examined": compared["sources_examined"],
                 "evidence_verified": verified,
                 "sweep_pages": sweep_pages, "sweep_records": len(swept),
+                "survey_pages": survey_pages,
             }
 
 

@@ -70,6 +70,32 @@ latency, and token costs. It is not a production latency or memory guarantee;
 large individual records and other archive layouts still need benchmarking.
 
 See also
+[real-client discovery evaluation](DISCOVERY_EVALUATION.md) for the five
+synthetic trials, the observed recall/call-budget failure, and the guided sweep
+comparison. Its optional model runner is separate from ordinary tests and CI.
+All 98 deterministic tests passed locally after adding the evaluation harness.
+
+To repeat discovery checks on larger synthetic archives, prepare a fresh
+temporary directory with `--seed 11 --size 1000`. A seed changes evidence
+positions and unrelated filler; completed-work and project-status evidence stay
+fixed. The generated `corpus.json` is the scoring reference for that directory.
+For example, after choosing a fresh `EVAL_DIR`:
+
+~~~sh
+PYTHONPATH=src .venv/bin/python -m archive_mcp.discovery_evaluate prepare "$EVAL_DIR" --seed 11 --size 1000
+PYTHONPATH=src .venv/bin/python -m archive_mcp.discovery_evaluate run-codex "$EVAL_DIR" nlp --enforce-budget
+PYTHONPATH=src .venv/bin/python -m archive_mcp.discovery_evaluate score nlp "$EVAL_DIR/nlp.answer.json" --trace-dir "$EVAL_DIR"
+~~~
+
+Repeat `projects` in the same directory, or use fresh directories for other
+seeds/repetitions. Model runs use the existing client's service and quota;
+ordinary tests remain local. `--enforce-budget` enables the dedicated server's
+read limits. Scoring distinguishes client attempts, successful server reads,
+budget rejections, returned body volume, and cumulative client tokens. Review
+the answers as well: valid quotations do not establish correct interpretation.
+Remove the temporary directories after retaining the findings you need.
+
+See also
 [MCP tools](MCP_TOOLS.md) for interface behavior, and
 [release readiness](OPEN_SOURCE_READINESS.md) for publication checks.
 The [documentation audit](DOCUMENTATION_AUDIT.md) records the subsequent full

@@ -36,17 +36,18 @@ the next call:
 | `search_history` | Search message text, saved context, and conversation titles with SQLite FTS5. | `query`, provider/account/date filters, `limit` |
 | `search_conversations` | Show distinct conversations with matching snippets; saved memories remain separate. | `query`, provider/account/date filters, group `limit` |
 | `get_conversation_matches` | Expand one conversation into paginated ranked title/message matches. | `query`, provider, account, conversation ID, date filters, `offset`, `limit` |
-| `get_conversation` | Read one bounded page of visible messages from a conversation or local session. | provider, account, conversation ID, `offset`, `limit` |
+| `get_conversation` | Read a conversation page; optionally check newest messages first. | provider, account, conversation ID, `offset`, `limit`, `newest_first` |
 | `get_message_context` | Read one message with graph-aware ancestors and descendants, including branches. | provider, account, conversation ID, message ID, `before`, `after` |
 | `get_message` | Read exact message text in bounded character pages. | provider, account, conversation ID, message ID, `offset`, `limit` |
 | `get_memory` | Read one saved memory or context record. | provider, account, memory ID |
 | `sweep_archive` | Read messages and saved context without keywords under a page budget. | source/date filters, `cursor`, `max_records`, `max_chars` |
+| `survey_archive` | Rotate across provider/accounts with cumulative coverage and resumable text slices. | source/date filters, `cursor`, `max_records`, `max_chars` |
 
 The additional `sweep_archive` tool reads bounded text pages without keywords,
 including saved context. See [archive sweep](ARCHIVE_SWEEP.md) for its arguments,
 continuation, budgets, and coverage contract.
 
-All twelve tools are read-only. They do not import, edit, delete, or re-index data.
+All thirteen tools are read-only. They do not import, edit, delete, or re-index data.
 
 Search/enumeration filters use plural `providers` and `accounts` lists.
 `list_sources` and direct record lookups instead use singular `provider` and
@@ -76,8 +77,39 @@ Titles, IDs, source listings, and total response bytes have no fixed character
 budget. Context returns up to 10 visible ancestors (possibly traversing more
 empty nodes); descendant reads have a 50-row cap per level as well as a
 50-visible-descendant total. It is a bounded view, with no completeness flag.
-Conversation pages follow stored row order, not a timestamp sort or a selected
-branch, and omit empty-text nodes.
+Conversation pages default to stored row order and omit empty-text nodes.
+With `newest_first=true`, they sort by timestamp descending, then local row ID
+descending, with undated messages last. `undated_messages` reports the number
+that cannot be placed chronologically. This includes all branches and independent
+roots; it does not infer that later messages supersede earlier branches. Keep
+the same order while paging. Check other conversations for project updates too.
+
+## Optional process read budgets
+
+For a dedicated bounded task, start the STDIO server with optional
+`--max-read-calls`, `--max-read-chars`, and `--max-read-seconds` arguments.
+All default to unlimited; ordinary long-running client registrations are unchanged.
+For example, append `--max-read-calls 12 --max-read-chars 24000 --max-read-seconds 90`
+to the existing server command for a temporary survey session.
+
+The server counts valid calls entering its read handler, including failed reads.
+It refuses further archive reads after the call limit. Time starts on the first
+read and is checked before reading and before releasing a result; it is not a
+hard interrupt of every SQL query or a bound on model generation time. Character
+limits count returned `text` and `snippet` fields, including repeated reads,
+not metadata, serialized JSON, or model tokens. An oversized response is withheld
+and consumes a call; request a smaller page if allowance remains.
+
+With limits enabled, dictionary responses include `read_budget` with used and
+remaining counts. List responses keep their existing shape; the same budget
+still applies. Accounting is serialized for concurrent requests. State is held
+in this server process only and resets on restart. No archive table is written.
+
+These limits bound reads/output from this one server process. They do not stop
+a client from attempting more calls, calling another tool/server, or starting a
+new process. Configure them for a dedicated task, not a shared permanent server
+unless that process-wide lifetime is intended. Survey pagination itself has
+per-page limits; it does not automatically enable a whole-task budget.
 
 ## Bounded conversation enumeration
 

@@ -22,7 +22,7 @@ checklist, not a security certification.
 - [x] Validate a fresh dependency installation from requirements.txt in that clone, including pip check.
 - [x] Connect Codex CLI to a synthetic archive using the published source and a temporary configuration; see [client verification](CLIENT_VERIFICATION.md#codex-cli).
 - [x] Record the CLI version, OS, configuration method, and successful status/search/evidence/comparison calls. Only this tested scope is promoted; other app integrations and permanent-registration setup remain unverified.
-- [x] Add [example prompts for all 12 tools](EXAMPLE_PROMPTS.md), validate their arguments over STDIO, and document provenance and coverage limits.
+- [x] Add [example prompts](EXAMPLE_PROMPTS.md), validate their arguments over STDIO, and document provenance and coverage limits; the original 12-tool check is now extended with the balanced survey tool.
 - [x] Handle empty native sessions, reject missing selected import paths, and consistently accept UTF-8 byte-order marks; verify with synthetic regression tests.
 - [x] Select [AI Pensieve MCP](https://github.com/AS-XS/AI-Pensieve-MCP), link the README download route, and configure the local Git origin.
 - [x] Upload the reviewed initial source to the selected repository and verify its main branch on GitHub (2026-09-10).

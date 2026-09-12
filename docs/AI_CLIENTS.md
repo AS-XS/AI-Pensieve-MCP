@@ -237,7 +237,7 @@ all projects. A project-only configuration goes in `.cursor/mcp.json`.
 Copy the `mcpServers` JSON entry shown in the Claude Desktop section and add
 `"type": "stdio"` inside the `ai-pensieve-mcp` server object, alongside
 `command`. Cursor's current field table marks it required. Restart Cursor after
-saving, then check that `ai-pensieve-mcp` and its twelve tools appear.
+saving, then check that `ai-pensieve-mcp` and its thirteen tools appear.
 
 ## Gemini CLI
 

@@ -117,6 +117,19 @@ For keyword-free reading of messages and saved context, page through
 [`sweep_archive`](ARCHIVE_SWEEP.md). Cross-reference remains bounded keyword
 search. A sweep covers its selected scope only after every page is read.
 
+## Broad discovery
+
+For broader discovery, use the source-balanced survey:
+
+~~~sh
+PYTHONPATH=src .venv/bin/python -m archive_mcp survey runtime/archive.sqlite --max-chars 12000
+~~~
+
+Pass `next_cursor` with `--cursor` to continue. Source statuses show what remains
+unread. Before relying on a project's current status, add `--newest-first` to
+`get-conversation` and check related conversations for newer updates. See
+[survey coverage and budgets](ARCHIVE_SWEEP.md).
+
 ## Configure refreshes
 
 Create runtime/sources.json with only the exports you want to refresh:

@@ -9,10 +9,10 @@ your archive if the client answers without using it.
 
 | Ask your AI | Retrieval approach and expected answer |
 | --- | --- |
-| “Did I do any NLP research? Search my history and show the evidence.” | Search distinct discussions for `NLP OR "natural language processing"`, then try relevant terms such as `tokeniz* OR sentiment OR "language model"`. Read matching messages and distinguish research you actually described doing from ideas or assistant suggestions. |
+| “Did I do any NLP research? Search my history and show the evidence.” | Use `survey_archive` for broad coverage, then search and read promising discussions. Distinguish research you described doing from ideas or assistant suggestions; report any unread sources or text. |
 | “What did I decide about this project across ChatGPT and Claude?” | Cross-reference the project name, open the original evidence, and compare dated user decisions by provider/account. Report disagreements and missing sources. |
 | “Where did we discuss keeping my archive private?” | Find matching conversations, then read nearby messages. Return a few useful discussions with dates and source IDs. |
-| “What projects have I talked about that I could pick up again?” | Search project terms such as `project OR prototype OR build`, read promising discussions, and identify proposals versus recorded progress. Present evidence-backed candidates; do not claim a complete project inventory. |
+| “What projects have I talked about that I could pick up again?” | Use `survey_archive` to find candidates, then read newest messages and search other conversations for updates. Distinguish unfinished work from completed, cancelled, work-owned, or assistant-proposed projects; report coverage limits. |
 | “What communication preferences have I explicitly stated?” | Search messages and saved context for preferences, then quote the relevant user statements or saved records. Do not turn a few examples into a personality diagnosis. |
 | “What conversations are available from last month?” | Enumerate with explicit date bounds. Explain that these bounds select conversation creation dates, so older threads with newer messages may need a separate message search. |
 
@@ -142,6 +142,8 @@ Returns conversation metadata and a page of nonempty messages. Follow
 `next_offset` for more messages. Stored row order is not necessarily chronological
 or a single chosen branch. Message previews may be truncated; use `get_message`
 for exact text. Keep provider and account attached to the conversation ID.
+Set `newest_first` to `true` to check later status updates; keep that order on
+subsequent pages. The response reports undated messages separately as a count.
 
 ### 9. Read nearby branches — get_message_context
 
@@ -198,6 +200,23 @@ Returns exact slices of messages followed by saved context, with provenance and
 `next_cursor`. Pass that cursor unchanged to continue. Limit total calls and time
 in your prompt, and report an early stop as partial coverage. The order is not
 a representative sample; see [sweep budgets and coverage](ARCHIVE_SWEEP.md).
+
+### 13. Survey across source accounts — survey_archive
+
+> Survey my imported history for completed research and unfinished projects.
+> Rotate across sources, preserve citations, and report any unread history.
+> Before recommending a project, check its latest conversation messages and
+> look for later completion, cancellation, or changed preferences elsewhere.
+
+```json
+{"tool": "survey_archive", "arguments": {"max_records": 50, "max_chars": 12000}}
+```
+
+The server rotates through provider/accounts and returns source coverage,
+record slices, and a continuation cursor. Continue only within your task budget.
+For a specific candidate, use `get_conversation` with `newest_first=true`.
+This reads across independent roots as well as branches, with undated messages
+last. Later messages are evidence to interpret, not automatic status overrides.
 
 ## What a useful answer should include
 
