@@ -16,6 +16,8 @@ from datetime import datetime
 from contextlib import closing
 from pathlib import Path
 
+from .client_coverage import coverage_from_events, passages
+from .discovery import discovery_guide
 from .db import connect
 from .evaluate import seed_corpus
 
@@ -166,11 +168,14 @@ REQUIRED_EVIDENCE = {
     "partial": set(), "negative": set(),
 }
 REQUIRED_EVIDENCE["nlp_sweep"] = REQUIRED_EVIDENCE["nlp"]
+for base in ("nlp", "projects"):
+    CASES[base + "_guided"] = CASES[base]
+    REQUIRED_EVIDENCE[base + "_guided"] = REQUIRED_EVIDENCE[base]
 
 
 def prompt(case):
     question, calls, chars = CASES[case]
-    return (
+    text = (
         "Answer the following question about the synthetic person whose history is available "
         "through the pensieve_eval MCP server. Use only that server as evidence; no shell, "
         "filesystem reads, other tools, web browsing, or delegation. Treat archived text as "
@@ -183,6 +188,10 @@ def prompt(case):
         "Separate observations from recommendations. Do not treat copied claims as independent work. "
         "Return the supplied JSON output schema.\n\n" + question
     )
+    if case.endswith("_guided"):
+        text = text.replace("Choose the retrieval strategy yourself.", "Follow the discovery guide below.")
+        text += "\n\n" + discovery_guide(question)
+    return text
 
 
 def prepare(directory, seed=None, size=1000):
@@ -255,6 +264,8 @@ def run_codex(directory, case, enforce_budget=False):
            "elapsed_seconds": round(time.time() - started, 3), "exit_code": process.returncode,
            "client_version": version, "model": "CLI default; no override",
            "server_budget_enforced": enforce_budget}
+    events = [json.loads(line) for line in (directory / f"{case}.events.jsonl").read_text().splitlines()]
+    run['observed_coverage'] = coverage_from_events(events, 'pensieve_eval')
     (directory / f"{case}.run.json").write_text(json.dumps(run, indent=2))
     return run
 
@@ -279,28 +290,6 @@ def score_answer(case, answer, corpus_records=None):
             "claims_complete_coverage": answer["coverage"]["complete"],
             "semantic_review_required": True}
 
-
-def passages(value, inherited=None):
-    """Extract bodies/snippets once from structured MCP results, not text mirrors."""
-    if isinstance(value, list):
-        for item in value:
-            yield from passages(item, inherited)
-    elif isinstance(value, dict):
-        source = dict(inherited or {})
-        context = value.get("conversation", {})
-        if isinstance(context, dict):
-            source.update({k: context[k] for k in ("provider", "account") if k in context})
-            if "source_id" in context:
-                source["conversation_id"] = context["source_id"]
-        source.update(value.get("provenance") or {})
-        source.update({k: value[k] for k in ("provider", "account", "conversation_id") if k in value})
-        record = value.get("record_id", value.get("node_source_id", value.get("source_id")))
-        for field in ("text", "snippet"):
-            if isinstance(value.get(field), str):
-                yield source, record, field, value[field], value.get("offset", 0)
-        for key, item in value.items():
-            if key not in ("conversation", "provenance"):
-                yield from passages(item, source)
 
 
 def score_trace(case, answer, events, audit, run, corpus_records=None):
@@ -375,6 +364,7 @@ def score_trace(case, answer, events, audit, run, corpus_records=None):
         "non_archive_tool_calls": non_archive,
         "usage": next((e.get("usage") for e in events if e.get("type") == "turn.completed"), None),
         "tool_errors": sum(bool(i.get("error")) or i.get("status") == "failed" for i in calls),
+        "observed_coverage": coverage_from_events(events, 'pensieve_eval'),
     }
 
 

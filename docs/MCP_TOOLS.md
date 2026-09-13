@@ -84,6 +84,50 @@ that cannot be placed chronologically. This includes all branches and independen
 roots; it does not infer that later messages supersede earlier branches. Keep
 the same order while paging. Check other conversations for project updates too.
 
+## Optional discovery prompt
+
+The server also exposes an MCP prompt named `discover_history`, with a required
+`question` string. It supplies a reusable guide: inventory, two distinct search
+queries, one small balanced survey, original evidence, and recent project updates.
+Retrieving the prompt performs no archive read and consumes no server read budget.
+It does not add another tool, run a model, or force the client to follow the guide.
+
+Prompt discovery/retrieval is verified with the Python MCP SDK. Availability and
+selection in individual AI applications have not been verified. Clients that
+support MCP prompts can request `discover_history`; custom Python clients can
+use `client.get_prompt("discover_history", {"question": "What work could I revisit?"})`.
+
+## Client-calculated coverage
+
+Custom Python clients can use `archive_mcp.client_coverage.CoverageLedger` for
+one task against one unchanged archive. Feed each structured result once:
+
+```python
+ledger = CoverageLedger()
+result = await client.call_tool(tool_name, arguments)
+ledger.record(tool_name, arguments, result.structured_content, failed=result.is_error)
+coverage = ledger.summary()
+```
+
+Import the class from `archive_mcp.client_coverage`. If a request is rejected
+before a result is returned, record it with `failed=True`; record interrupted
+attempts with `unfinished=True`. The helper distinguishes attempts from successful
+results and separates searched sources, sources with returned text, and complete
+traversal. It copies inventory totals directly and holds counters/source identities
+and traversal cursors in memory, without retaining retrieved text or writing files.
+Text counts include `text`/`snippet` fields, including title snippets and repeated reads.
+
+Full-archive traversal is established conservatively by an unfiltered sweep or
+survey followed from its first page through an unbroken cursor chain. A tail page,
+date-filtered traversal, or search with no matches does not establish full coverage.
+The helper does not check database freshness: create a fresh ledger after imports,
+refreshes, rebuilds, or other archive changes. Unknown inventory is reported explicitly.
+
+This integration is available to custom clients and the optional evaluation runner;
+it does not automatically change other AI applications' answers or accounting.
+Display its calculated coverage separately from the model's claims. Valid counts
+do not establish accurate interpretation or complete provider exports.
+
 ## Optional process read budgets
 
 For a dedicated bounded task, start the STDIO server with optional

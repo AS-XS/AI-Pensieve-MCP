@@ -45,6 +45,11 @@ For code-enforced whole-task limits in a dedicated server process, see
 
 ## Sequential reading with sweep_archive
 
+For a guided combination of search, a small survey, and original-message checks,
+see the [optional discovery prompt and client accounting](MCP_TOOLS.md#optional-discovery-prompt).
+The guide reserves calls for alternate descriptions of work and current project
+status. It is a retrieval recipe, not a guarantee of complete recall.
+
 `sweep_archive` reads a bounded page of imported messages and saved context
 without requiring search words. It is useful when you want to survey topics or
 look for unfinished projects whose names you do not remember. All reads remain

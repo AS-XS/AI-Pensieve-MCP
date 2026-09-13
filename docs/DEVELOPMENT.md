@@ -95,6 +95,14 @@ budget rejections, returned body volume, and cumulative client tokens. Review
 the answers as well: valid quotations do not establish correct interpretation.
 Remove the temporary directories after retaining the findings you need.
 
+The `nlp_guided` and `projects_guided` cases use the same questions, gold evidence,
+and budgets with the reusable `discover_history` guide appended. Compare them
+with `nlp` and `projects` on the same seed. The guide was developed after examining
+those cases' failures, so this is an exploratory comparison, not a held-out test.
+Run metadata and scored traces include `observed_coverage`, computed from actual
+tool events without consulting gold records or trusting the model's coverage lists.
+Original model answers remain intact so that disagreements stay visible.
+
 See also
 [MCP tools](MCP_TOOLS.md) for interface behavior, and
 [release readiness](OPEN_SOURCE_READINESS.md) for publication checks.

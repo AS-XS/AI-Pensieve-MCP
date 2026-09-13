@@ -15,6 +15,7 @@ from pydantic import Field
 from .sweep import sweep_archive as sweep
 from .survey import survey_archive as survey
 from .read_budget import BudgetExceeded, ReadBudget
+from .discovery import discovery_guide
 
 from .db import (
     archive_status as status,
@@ -89,6 +90,11 @@ def create_server(database, log=None, max_calls=None, max_chars=None, max_second
     database = Path(database).resolve()
     mcp = MCPServer("AI Pensieve MCP", instructions=INSTRUCTIONS)
     budget = ReadBudget(max_calls, max_chars, max_seconds)
+
+    @mcp.prompt()
+    def discover_history(question: str) -> str:
+        """Guide a bounded discovery task through search, survey, and original evidence."""
+        return discovery_guide(question)
 
     def read(tool, function, *args, **kwargs):
         started = time.perf_counter()

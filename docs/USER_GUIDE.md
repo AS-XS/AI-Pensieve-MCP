@@ -32,6 +32,27 @@ UTF-8 with or without a byte-order mark. Claude Code and Antigravity sessions
 with no visible dialogue produce a `no_indexable_records` warning and add no
 conversation; previously imported dialogue is preserved.
 
+## Import overlapping exports
+
+For formats with stable original IDs, imports match provider/account, conversation
+ID, and message/node ID. Titles and export filenames are not duplicate keys.
+Importing a later ChatGPT or Claude export under the same account label updates
+existing records and adds new messages to the same thread. Renaming a thread does
+not create another copy; different thread IDs sharing a title remain separate.
+Appending dialogue to a Codex session and re-importing also retains one session.
+These overlap cases are covered by synthetic regression tests.
+
+Keep the account label consistent between imports. Distinct accounts/providers
+remain distinct even if their text matches. Current import totals count processed
+records, not separate new/changed/unchanged categories.
+
+This is not universal content-based duplicate detection or revision conflict
+resolution. Older snapshots imported later can overwrite retained fields, and
+some native importers rebuild their derived session snapshots. Gemini activity
+uses inferred sessions and replaces the selected account's activity view; Codex
+line-based IDs can change after a file rewrite. See [identity mappings](SCHEMA.md)
+and [data lifecycle](DATA_LIFECYCLE.md) for format-specific behavior.
+
 ## Choose your own source folders
 
 To use a folder in its existing location, no copy into `imports/` is needed.
