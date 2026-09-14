@@ -1,0 +1,54 @@
+name: Publish PyPI packages
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.13'
+      - run: python -m pip install -r requirements.txt build==1.6.1 twine==7.0.0
+      - run: python -m unittest discover -s tests -q
+        env:
+          PYTHONPATH: src
+      - run: |
+          python -m build --outdir dist/core
+          python -m build packaging/desktop --outdir dist/desktop
+          python -m twine check --strict dist/core/* dist/desktop/*
+          python -m pip install --no-deps --no-index --find-links dist/core --find-links dist/desktop ai-pensieve-mcp ai-pensieve
+          python -I scripts/check_installed.py
+      - uses: actions/upload-artifact@v7
+        with:
+          name: python-packages
+          path: dist/
+          retention-days: 7
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: python-packages
+          path: dist/
+      - name: Publish core first
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist/core/
+          skip-existing: true
+      - name: Publish desktop launcher
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist/desktop/
+          skip-existing: true

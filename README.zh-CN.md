@@ -10,6 +10,8 @@
 
 ## 1. 安装
 
+uvx/pipx 命令和 PyPI 发布状态请参阅[独立安装指南](docs/INSTALLATION.md)。下面仍提供源码安装方式。
+
 从 [GitHub](https://github.com/AS-XS/AI-Pensieve-MCP) 下载 ZIP，解压后在终端进入项目文件夹。需要 Python 3.10 或更高版本，并且 SQLite 支持 FTS5。
 
 macOS/Linux：

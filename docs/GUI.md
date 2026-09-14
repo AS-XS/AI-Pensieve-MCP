@@ -21,6 +21,10 @@ preferences last for the current window.
 
 ## Install and open
 
+For isolated uvx/pipx installation and PyPI release status, see the
+[package installation guide](INSTALLATION.md). The commands below install from
+a downloaded source checkout.
+
 Start in the extracted project folder with the virtual environment from the
 [README](../README.md). GUI dependencies are separate from the core installation.
 These commands download the optional desktop packages from PyPI and install this
@@ -29,7 +33,7 @@ local checkout; there is no shell installer or remote script.
 macOS (verified with Python 3.13 / pywebview 6.2.1):
 
 ```sh
-.venv/bin/python -m pip install '.[gui]'
+.venv/bin/python -m pip install '.[gui]' ./packaging/desktop
 source .venv/bin/activate
 pensieve --database runtime/archive.sqlite
 ```
@@ -37,7 +41,7 @@ pensieve --database runtime/archive.sqlite
 Windows PowerShell (GUI unverified):
 
 ```powershell
-.\.venv\Scripts\python.exe -m pip install '.[gui]'
+.\.venv\Scripts\python.exe -m pip install '.[gui]' ./packaging/desktop
 .\.venv\Scripts\pensieve.exe --database runtime\archive.sqlite
 ```
 
@@ -46,10 +50,19 @@ supported GTK or Qt webview backend; the project does not yet provide a tested
 Linux GUI installation recipe. See the upstream [installation guide](https://pywebview.flowrl.com/guide/installation.html).
 No standalone signed/notarized app bundle is provided yet.
 
-The default database is `runtime/archive.sqlite` relative to the directory where
-you run the command. Prefer an explicit path when launching elsewhere. The
-library/import footer shows the exact archive being used. A missing database is created,
-and supported schema upgrades run on opening; no import starts automatically.
+Without `--database`, the archive is stored outside installation/tool caches:
+
+| System | Default archive |
+| --- | --- |
+| macOS | `~/Library/Application Support/AI Pensieve/archive.sqlite` |
+| Windows | `%LOCALAPPDATA%/AI Pensieve/archive.sqlite` |
+| Linux | `$XDG_DATA_HOME/ai-pensieve/archive.sqlite`, or `~/.local/share/ai-pensieve/archive.sqlite` |
+
+The same archive opens regardless of the launch directory. Uninstalling uv/pipx
+tools does not remove it. Existing checkout archives are not moved: keep using
+`--database runtime/archive.sqlite` or an absolute path to open one. The
+library/import footer shows the exact path. A missing database is created and
+supported schema upgrades run on opening; no import starts automatically.
 
 To work directly from edited sources after installing GUI dependencies:
 
@@ -57,7 +70,7 @@ To work directly from edited sources after installing GUI dependencies:
 PYTHONPATH=src .venv/bin/python -m archive_mcp.gui --database runtime/archive.sqlite
 ```
 
-A normal `pip install '.[gui]'` copies the code; reinstall after updates to that
+A normal `pip install '.[gui]' ./packaging/desktop` copies the code; reinstall after updates to that
 checkout, or use the source command above during development.
 
 ## Try without private history

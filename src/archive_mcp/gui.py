@@ -7,11 +7,13 @@ from collections import Counter
 from contextlib import closing
 from functools import wraps
 from importlib.resources import files
+from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 import sqlite3
 import threading
 
 from .auto_import import classify, IMPORTERS
+from .paths import default_database
 from .batches import run_batch
 from .sync import default_roots, local_sources
 from .db import (
@@ -272,7 +274,13 @@ def page_html():
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description='Open the local AI Pensieve desktop prototype.')
-    parser.add_argument('--database', default='runtime/archive.sqlite', help='Local SQLite archive (default: runtime/archive.sqlite in the current directory)')
+    parser.add_argument('--database', type=Path, default=default_database(),
+                        help='Local SQLite archive (default: persistent per-user application data)')
+    try:
+        installed_version = version('ai-pensieve-mcp')
+    except PackageNotFoundError:
+        installed_version = 'source checkout'
+    parser.add_argument('--version', action='version', version=f'AI Pensieve {installed_version}')
     args = parser.parse_args(argv)
     try:
         import webview
