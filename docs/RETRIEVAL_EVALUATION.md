@@ -57,6 +57,14 @@ improving search and update their baseline expectations as behavior improves.
 The synonym case alone does not justify adding an embedding model: first measure realistic
 personal queries and try ordinary query reformulation.
 
+## Continuous integration
+
+The four Ubuntu/Windows and Python 3.10/3.13 jobs run this synthetic evaluation.
+CI prints the result and requires all eleven cases to be present. Every case
+except the documented synonym miss (case 9) must pass with full recall; case 9
+may improve. This check is separate from the evaluator's exit code, which treats
+retrieval misses as valid measurement outcomes.
+
 ## Evaluate a private archive
 
 Keep private cases inside ignored `runtime/`, for example

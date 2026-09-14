@@ -14,7 +14,7 @@ checklist, not a security certification.
 - [x] Provide a temporary synthetic demo that verifies import, integrity, real STDIO pagination/comparison, and original-message retrieval locally on macOS and in Ubuntu/Windows CI.
 - [x] Verify the Git-eligible source layout in isolation from local configuration and private archives; 79 tests, demo, and evaluation pass using installed dependencies. See [verification scope](DEVELOPMENT.md).
 - [x] Add CI and contributor/security reporting guidance.
-- [ ] Enable GitHub private vulnerability reporting at public launch; the repository is currently private, where that feature is unavailable. See [security reporting](../SECURITY.md).
+- [x] Enable GitHub private vulnerability reporting for the public repository and verify the enabled state (2026-09-14). See [security reporting](../SECURITY.md).
 - [x] Review all root Markdown and public documentation against implementation and official sources; record corrections and verification limits in [documentation audit](DOCUMENTATION_AUDIT.md).
 - [x] Confirm successful Ubuntu/Windows CI runs on Python 3.10 and 3.13 for `f68bb1d`; see the [run and scope](CLIENT_VERIFICATION.md#github-ci).
 - [x] Review intended source files and local Git history for private material before the initial upload; publish a clean initial history with a GitHub noreply author address. This bounded review is not a secret-detection guarantee.
@@ -26,7 +26,7 @@ checklist, not a security certification.
 - [x] Handle empty native sessions, reject missing selected import paths, and consistently accept UTF-8 byte-order marks; verify with synthetic regression tests.
 - [x] Select [AI Pensieve MCP](https://github.com/AS-XS/AI-Pensieve-MCP), link the README download route, and configure the local Git origin.
 - [x] Upload the reviewed initial source to the selected repository and verify its main branch on GitHub (2026-09-10).
-- [ ] Complete remaining release checks and publish a versioned public release. The repository was confirmed private on 2026-09-10; the source upload did not change its visibility.
+- [ ] Complete remaining release checks and publish a versioned release. The repository is public as of 2026-09-14; public visibility alone is not a versioned release.
 
 A GUI, semantic search, and personal reflection are later milestones. They are
 not necessary to release a useful developer archive.

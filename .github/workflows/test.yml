@@ -17,8 +17,8 @@ jobs:
     env:
       PYTHONPATH: src
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
@@ -26,3 +26,15 @@ jobs:
       - run: python -m unittest discover -s tests -q
       - run: python -m archive_mcp.demo > demo.json
       - run: python -c "import json; r=json.load(open('demo.json')); assert r['ok'] and r['check']['ok'] and r['mcp']['ok']"
+      - name: Evaluate synthetic retrieval
+        run: python -m archive_mcp.evaluate > evaluation.json
+      - name: Check retrieval baseline
+        # Case 9 is the documented offline/disconnected synonym miss.
+        # It may improve, but every other case must retain full recall.
+        run: >-
+          python -c "import json;
+          r=json.load(open('evaluation.json'));
+          print(json.dumps(r, indent=2));
+          assert r['top_k'] == 5 and r['case_count'] == 11;
+          assert {c['case'] for c in r['cases']} == set(range(1, 12));
+          assert all(c['passed'] and (c['recall'] is None or c['recall'] == 1.0) for c in r['cases'] if c['case'] != 9)"
