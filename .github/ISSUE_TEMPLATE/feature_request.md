@@ -7,6 +7,11 @@ assignees: ''
 
 ---
 
+**Keep examples synthetic**
+Do not include private conversations, exports, database files, credentials, or
+personal paths. Use the [private reporting channel](https://github.com/AS-XS/AI-Pensieve-MCP/security/advisories/new)
+for suspected security or privacy vulnerabilities.
+
 **Is your feature request related to a problem? Please describe.**
 A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
 
