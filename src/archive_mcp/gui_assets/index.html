@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; img-src data:; script-src 'unsafe-inline' 'unsafe-eval'; style-src 'unsafe-inline'; connect-src 'none'; base-uri 'none'; form-action 'none'"
+    />
+    <title>Pensieve</title>
+    <style>
+      /* BUNDLED_STYLE */
+    </style>
+  </head>
+  <body data-scene="door">
+    <button
+      id="language-toggle"
+      class="quiet language-toggle"
+      aria-label="Switch to Chinese"
+    >
+      中文
+    </button>
+    <div id="chamber" aria-label="The Pensieve chamber" inert>
+      <div id="room-stage" class="room-stage">
+        <div class="room-art"></div>
+        <div class="water-light"></div>
+        <button
+          id="pensieve"
+          class="hotspot basin-target"
+          aria-label="Touch the Pensieve"
+          aria-expanded="false"
+        >
+          <span>The Pensieve</span>
+        </button>
+        <button
+          id="bottle-shelf"
+          class="hotspot bottles-target"
+          aria-label="Open the memory bottle shelf — library"
+        >
+          <span>The memory shelf</span>
+        </button>
+        <button
+          id="orb-shelf"
+          class="hotspot orbs-target"
+          aria-label="Open the prophecy orb shelf — sources"
+        >
+          <span>The collected sources</span>
+        </button>
+      </div>
+      <div class="overhead-art" aria-hidden="true"></div>
+      <div class="room-vignette" aria-hidden="true"></div>
+      <div id="basin-menu" hidden>
+        <p>What memory will you stir?</p>
+        <button id="scene-import">Import a memory</button
+        ><span aria-hidden="true">✧</span
+        ><button id="scene-search">Search the waters</button>
+      </div>
+      <p id="room-hint">
+        Touch the Pensieve. The shelves hold your collected memories.
+      </p>
+      <button id="return-door" class="quiet room-return">← The doorway</button>
+    </div>
+    <canvas id="smoke" aria-hidden="true"></canvas>
+    <section id="entry" aria-label="The closed door">
+      <div class="entry-shadows" aria-hidden="true"></div>
+      <div class="entry-title">P E N S I E V E</div>
+      <button id="open-door" aria-label="Open the wooden door">
+        <span class="door-leaf left-leaf" aria-hidden="true"></span
+        ><span class="door-leaf right-leaf" aria-hidden="true"></span>
+        <span class="door-seam" aria-hidden="true"></span>
+        <span class="door-invitation">A memory waits within.</span>
+      </button>
+      <p class="entry-hint">Touch the door to enter</p>
+      <button id="skip-door" class="quiet">Enter without the transition</button>
+    </section>
+    <button id="motion-toggle" class="quiet motion-toggle" aria-pressed="false">
+      Still the magic
+    </button>
+    <div id="error" class="error toast" role="alert" hidden></div>
+    <div id="scene-status" class="scene-status" role="status"></div>
+    <dialog id="workbench" aria-labelledby="page-name">
+      <button
+        id="close-workbench"
+        class="quiet scene-back"
+        aria-label="Return to the chamber"
+      >
+        ← Return to chamber
+      </button>
+      <div class="workbench-surface">
+        <header class="panel-header">
+          <div>
+            <p class="eyebrow" id="panel-eyebrow">THE MEMORY SHELF</p>
+            <h1 id="page-name">Your collected memories</h1>
+          </div>
+        </header>
+        <section id="library-view">
+          <div class="library-overview">
+            <div id="inventory"></div>
+            <button id="browse-library" class="quiet">
+              Browse the collection</button
+            ><button id="empty-import" class="quiet">Add a memory</button>
+          </div>
+          <form id="search-form" class="searchbar">
+            <label class="sr-only" for="query">Search memories</label
+            ><input
+              id="query"
+              placeholder="What do you wish to remember?"
+              autocomplete="off"
+            /><button type="submit">Search</button>
+          </form>
+          <div class="filters">
+            <label
+              >Provider
+              <select id="provider">
+                <option value="">All providers</option>
+              </select></label
+            ><label
+              >Account
+              <select id="account-filter">
+                <option value="">All accounts</option>
+              </select></label
+            >
+          </div>
+          <div class="search-caption">
+            <span id="result-count">—</span>
+            <p id="search-note" role="status">
+              Ask the waters for a word, an idea, a memory.
+            </p>
+          </div>
+          <div id="results" aria-label="Memory results"></div>
+          <button id="browse-more" class="quiet" hidden>More memories</button>
+        </section>
+        <section id="import-view" hidden>
+          <form id="import-form" aria-label="Import a memory">
+            <div class="quick-import">
+              <button type="button" id="import-local">
+                Find &amp; import local sessions
+              </button>
+              <p class="hint">
+                One click: Codex, Claude Code, Qwen Code, Antigravity and ZCode
+                in their known folders. Close native apps first. Uses the
+                account label below; website exports still need a folder.
+              </p>
+            </div>
+            <select
+              id="source-format"
+              hidden
+              aria-label="Selected import format"
+            ></select>
+            <div
+              id="bottle-rack"
+              class="bottle-rack"
+              role="group"
+              aria-label="Choose a provider memory bottle"
+            ></div>
+            <div class="source-details">
+              <p id="selected-format">
+                The unmarked bottle · detect supported files
+              </p>
+              <label for="source-path"
+                >Choose where this memory comes from</label
+              >
+              <div class="path-row">
+                <input
+                  id="source-path"
+                  placeholder="A file or folder on this computer"
+                /><button type="button" id="choose-folder">Choose folder</button
+                ><button type="button" id="choose-file">File</button>
+              </div>
+              <div class="account-row">
+                <label for="import-account">Account label</label
+                ><input
+                  id="import-account"
+                  value="default"
+                  list="account-labels"
+                  autocomplete="off"
+                  required
+                /><datalist id="account-labels"></datalist
+                ><button type="button" id="preview-button" class="quiet">
+                  Inspect selection
+                </button>
+              </div>
+              <p class="hint">
+                Use the same account label for later exports. Extract ZIPs
+                first; close ZCode before importing its store.
+              </p>
+              <div id="preview" class="preview" role="status">
+                Choose a bottle, then a source. Your original files stay where
+                they are.
+              </div>
+              <button type="submit" id="import-button" class="pour-button">
+                Pour into the Pensieve
+              </button>
+              <div id="progress" class="progress" role="status" hidden>
+                <progress></progress><span></span>
+              </div>
+            </div>
+          </form>
+          <section id="import-result" aria-live="polite" hidden></section>
+        </section>
+        <footer>
+          Stored only on this computer <span id="database-path"></span>
+        </footer>
+      </div>
+    </dialog>
+    <dialog id="reader-dialog" aria-label="Original memory">
+      <div id="reader-surface">
+        <button id="close-reader" class="quiet">← Back to the memories</button>
+        <section id="reader" aria-label="Conversation reader"></section>
+      </div>
+    </dialog>
+    <div id="pour-ritual" aria-hidden="true" hidden>
+      <div id="pour-vial"></div>
+      <div class="memory-stream"></div>
+      <div class="pour-halo"></div>
+    </div>
+    <script>
+      /* BUNDLED_I18N */
+    </script>
+    <script>
+      const providerLogos = /* BUNDLED_LOGOS */;
+    </script>
+    <script>
+      /* BUNDLED_SCRIPT */
+    </script>
+    <script>
+      /* BUNDLED_SCENE */
+    </script>
+  </body>
+</html>

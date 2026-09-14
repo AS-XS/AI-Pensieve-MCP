@@ -4,7 +4,7 @@ from pathlib import Path
 from urllib.parse import unquote, urlparse
 
 from .db import initialize
-from .importing import account_id, conversation_id, upsert_message
+from .importing import ImportChanges, account_id, conversation_id, upsert_message
 
 
 def varint(data, position):
@@ -64,6 +64,7 @@ def workspace(connection):
 
 
 def import_file(connection, source, account="default"):
+    changes = ImportChanges()
     source = Path(source)
     uri = source.resolve().as_uri() + "?mode=ro&immutable=1"
     with closing(sqlite3.connect(uri, uri=True)) as native:
@@ -80,20 +81,22 @@ def import_file(connection, source, account="default"):
 
     initialize(connection)
     if not selected:
-        return {"conversations": 0, "nodes": 0}
+        return changes.result({"conversations": 0, "nodes": 0})
     with connection:
         source_account = account_id(connection, "antigravity", account)
         key = conversation_id(
             connection, source_account, trajectory_id, source,
             f"Antigravity session: {project.name}",
             selected[0][3], selected[-1][3], "local_session",
+            changes=changes,
         )
         parent = None
         for index, role, text, created_at in selected:
             node_id = f"step:{index}"
             upsert_message(
                 connection, key, node_id, None, parent, role, text, created_at,
+                changes=changes,
             )
             parent = node_id
 
-    return {"conversations": 1, "nodes": len(selected)}
+    return changes.result({"conversations": 1, "nodes": len(selected)})

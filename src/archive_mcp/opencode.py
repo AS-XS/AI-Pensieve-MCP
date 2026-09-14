@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 
 from .db import initialize
-from .importing import account_id, conversation_id, upsert_message
+from .importing import ImportChanges, account_id, conversation_id, upsert_message
 
 
 def seconds(value):
@@ -18,6 +18,7 @@ def text(message):
 
 
 def import_file(connection, source, account="default"):
+    changes = ImportChanges()
     source = Path(source)
     data = json.loads(source.read_text(encoding="utf-8-sig"))
     info = data["info"]
@@ -37,6 +38,7 @@ def import_file(connection, source, account="default"):
             info.get("title", "OpenCode session"),
             seconds(times.get("created")), seconds(times.get("updated")),
             "local_session",
+            changes=changes,
         )
         previous = None
         for message, body in selected:
@@ -45,7 +47,8 @@ def import_file(connection, source, account="default"):
                 connection, key, node_id, node_id,
                 message.get("parentID", previous), message["role"], body,
                 seconds(message.get("time", {}).get("created")),
+                changes=changes,
             )
             previous = node_id
 
-    return {"conversations": 1, "nodes": len(selected)}
+    return changes.result({"conversations": 1, "nodes": len(selected)})

@@ -2,10 +2,11 @@ import json
 from pathlib import Path
 
 from .db import initialize
-from .importing import account_id, upsert_memory
+from .importing import ImportChanges, account_id, upsert_memory
 
 
 def import_file(connection, source, account="default"):
+    changes = ImportChanges()
     source = Path(source)
     document = json.loads(source.read_text(encoding="utf-8-sig"))
     initialize(connection)
@@ -22,6 +23,7 @@ def import_file(connection, source, account="default"):
                 memory.get("title", ""),
                 memory["text"],
                 memory.get("created_at"),
+                changes=changes,
             )
 
-    return {"memories": len(document["memories"])}
+    return changes.result({"memories": len(document["memories"])})

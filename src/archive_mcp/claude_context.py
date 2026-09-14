@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 
 from .db import initialize
-from .importing import account_id, upsert_memory
+from .importing import ImportChanges, account_id, upsert_memory
 
 
 def memory_items(data):
@@ -26,6 +26,7 @@ def project_items(project):
 
 
 def import_file(connection, source, account="default"):
+    changes = ImportChanges()
     source = Path(source)
     data = json.loads(source.read_text(encoding="utf-8-sig"))
     items = list(memory_items(data) if isinstance(data, list) else project_items(data))
@@ -34,6 +35,6 @@ def import_file(connection, source, account="default"):
     with connection:
         source_account = account_id(connection, "claude", account)
         for source_id, kind, title, text, created_at in items:
-            upsert_memory(connection, source_account, source_id, source, kind, title, text, created_at)
+            upsert_memory(connection, source_account, source_id, source, kind, title, text, created_at, changes=changes)
 
-    return {"memories": len(items)}
+    return changes.result({"memories": len(items)})

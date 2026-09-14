@@ -6,7 +6,7 @@ from contextlib import closing
 from pathlib import Path
 
 from .db import initialize
-from .importing import account_id, conversation_id, upsert_message
+from .importing import ImportChanges, account_id, conversation_id, upsert_message
 
 
 REQUIRED_COLUMNS = {
@@ -40,6 +40,7 @@ def visible(message):
 
 
 def import_file(connection, source, account="default"):
+    changes = ImportChanges()
     source = Path(source)
     # immutable avoids creating journal/SHM files in the provider's directory.
     # It requires a closed, checkpointed source, not a live WAL database.
@@ -83,6 +84,7 @@ def import_file(connection, source, account="default"):
                 connection, account_key, session["id"], source, session["title"],
                 session["time_created"] / 1000, session["time_updated"] / 1000,
                 "local_session",
+                changes=changes,
             )
             retained = {row["id"] for row in selected}
             previous = None
@@ -100,8 +102,9 @@ def import_file(connection, source, account="default"):
                 upsert_message(
                     connection, key, row["id"], row["id"], parent,
                     message["role"], "\n\n".join(bodies[row["id"]]), row["time_created"] / 1000,
+                    changes=changes,
                 )
                 previous = row["id"]
             counts["conversations"] += 1
             counts["nodes"] += len(selected)
-    return counts
+    return changes.result(counts)

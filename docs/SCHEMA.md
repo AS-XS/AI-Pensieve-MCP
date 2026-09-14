@@ -55,10 +55,11 @@ and node/memory ID. Integer database IDs are local implementation details and
 can change when rebuilding. Most source IDs are provider-issued; the derived
 identities below have narrower stability guarantees.
 
-source_file records the supplied path for conversations/memories. Reimporting
-the same identity from another path updates that field. It is not an immutable
-list of every export containing that record. Messages inherit file provenance
-through their conversation. The structured source_file field is removed from
+source_file records the supplied path for conversations/memories. An accepted
+reimport of the same identity from another path updates that field; a protected
+conversation keeps its previous path. It is not an immutable list of every export
+containing that record. Messages inherit file provenance through their conversation,
+so a thread assembled from several exports has no per-message export-file history. The structured source_file field is removed from
 MCP responses; paths embedded in text or titles can remain.
 
 Dates are stored as numeric Unix seconds where supplied. Provider-specific
@@ -68,6 +69,41 @@ Conversation dates may also be derived from retained messages, as mapped below.
 ISO timestamps without a timezone currently use the host's
 local timezone during import; timezone-aware inputs are needed for portable
 absolute dates. Retrieval date filters without a timezone use UTC.
+
+## Import revision policy
+
+The shared conversation/session importer uses the mapped `updated_at` field
+already present in schema version 1. If the stored date exists and the incoming
+date is older or missing, it keeps the stored conversation metadata and existing
+message fields. It still adds previously unseen node IDs. Accepted snapshots
+upsert encountered nodes; absent nodes generally remain. Codex additionally
+prunes omitted nodes for accepted snapshots, preserving newer tails when an older
+snapshot arrives. Its exact review-session exclusion still removes the derived
+session regardless of dates.
+
+Equal dates and two missing dates do not establish chronology; changed incoming
+fields win. The comparison is conversation-level, not independent message edit
+tracking: message edit dates such as Claude message.updated_at are not mapped.
+A newer conversation snapshot may still contain an older individual message.
+Native session dates derived from dialogue indicate observed activity, not a
+verified export revision. Incorrect source dates can therefore affect precedence.
+The guard uses each adapter's existing date mapping, including native session
+fallbacks; filesystem modification times are not evidence of revision order.
+
+Gemini activity explicitly opts out of the revision comparison: one selected
+HTML still replaces that account's activity view. Matching identities are updated
+in place and omitted derived sessions/nodes are removed. Saved context has no
+mapped edit revision; incoming fields win even if a creation date is older.
+These formats require the user to select the desired current snapshot.
+
+Identical encountered rows are not rewritten. Per-file change summaries compare
+only touched identities, with source paths excluded from content classification;
+they do not scan or copy the full archive. Memory use for accounting scales with
+the touched content. Summaries report new, updated, unchanged, protected, and
+removed identities and are returned after a successful file commit. Batches sum
+per-file summaries; counts are not persisted in the operational history. See
+[import counts](USER_GUIDE.md#read-the-import-counts). This adds no schema objects,
+revision tables, automatic backups, or hash verification.
 
 ## Provider field mappings
 

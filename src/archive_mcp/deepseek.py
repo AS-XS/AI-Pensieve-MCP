@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 
 from .db import initialize
-from .importing import account_id, conversation_id, upsert_message
+from .importing import ImportChanges, account_id, conversation_id, upsert_message
 
 
 ROLES = {"REQUEST": "user", "RESPONSE": "assistant", "FILE": "user"}
@@ -23,6 +23,7 @@ def message_data(message):
 
 
 def import_file(connection, source, account="default"):
+    changes = ImportChanges()
     source = Path(source)
     conversations = json.loads(source.read_text(encoding="utf-8-sig"))
     initialize(connection)
@@ -39,6 +40,7 @@ def import_file(connection, source, account="default"):
                 conversation.get("title", ""),
                 conversation.get("inserted_at"),
                 conversation.get("updated_at"),
+                changes=changes,
             )
             for node_id, node in conversation.get("mapping", {}).items():
                 message = node.get("message")
@@ -52,7 +54,8 @@ def import_file(connection, source, account="default"):
                     role,
                     text,
                     message.get("inserted_at") if message else None,
+                    changes=changes,
                 )
                 node_count += 1
 
-    return {"conversations": len(conversations), "nodes": node_count}
+    return changes.result({"conversations": len(conversations), "nodes": node_count})

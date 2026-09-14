@@ -43,15 +43,50 @@ Appending dialogue to a Codex session and re-importing also retains one session.
 These overlap cases are covered by synthetic regression tests.
 
 Keep the account label consistent between imports. Distinct accounts/providers
-remain distinct even if their text matches. Current import totals count processed
-records, not separate new/changed/unchanged categories.
+remain distinct even if their text matches.
 
-This is not universal content-based duplicate detection or revision conflict
-resolution. Older snapshots imported later can overwrite retained fields, and
-some native importers rebuild their derived session snapshots. Gemini activity
-uses inferred sessions and replaces the selected account's activity view; Codex
-line-based IDs can change after a file rewrite. See [identity mappings](SCHEMA.md)
-and [data lifecycle](DATA_LIFECYCLE.md) for format-specific behavior.
+Conversation/session imports compare the incoming mapped update date with the
+stored date. An older date, or a missing date when a stored date exists, preserves
+the stored conversation fields and matching messages. Previously unseen message
+IDs can still be added, including old branches. Accepted Codex snapshots also
+prune parser-excluded nodes; stale ones cannot remove a newer session tail.
+
+Equal dates, or two missing dates, cannot establish revision order: changed fields
+use the incoming content. Saved context has no mapped edit date and also uses the
+incoming content. Gemini activity replaces the selected account's activity view
+from one HTML file; it does not have this freshness protection. Native session
+dates may be inferred from retained dialogue, rather than provider edit revisions.
+Codex line IDs can shift after a rewrite; Gemini session IDs are inferred. This
+is not universal content-based deduplication or per-message revision history.
+See [identity and revision rules](SCHEMA.md#import-revision-policy).
+
+### Read the import counts
+
+CLI import, auto-import, native sync, and refresh results include a `changes`
+summary for `conversations`, `nodes`, and `memories`:
+
+| Count | Meaning |
+| --- | --- |
+| new | A previously absent identity was added. |
+| updated | Stored content or mapped dates changed. |
+| unchanged | Encountered content and dates stayed the same. A source-path-only change also belongs here. |
+| protected | Conflicting incoming fields were rejected because the stored conversation has a newer known date, or the incoming date is missing. |
+| removed | An explicit snapshot replacement or parser exclusion removed a derived record. |
+
+For example, a thread gaining one message can show one updated conversation,
+one new node, and its earlier nodes unchanged. Nodes include empty tree nodes.
+Counts describe net changes per identity within each committed file, and batch
+results sum those file counts. Each identity contributes to one net category;
+new/updated/removed take precedence over protected collisions within a file.
+If two files contain the same identity it can
+contribute to both files' counts. Records absent from an upsert input are not
+counted as unchanged. Existing top-level `conversations`, `nodes`, and `memories`
+totals still mean records processed, so they can differ from change counts.
+
+These change counts are returned by the operation; `import-report` retains file
+completion and warnings, not historical change counts. A failed file rolls back
+its content; earlier committed files can remain. No schema migration, automatic
+backup, or source hash pass is needed for this feature.
 
 ## Choose your own source folders
 

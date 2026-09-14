@@ -2,6 +2,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from import_expectations import expected_result
+
 from archive_mcp.db import connect, search
 from archive_mcp.gemini import import_file
 
@@ -20,10 +22,10 @@ class GeminiImportTest(unittest.TestCase):
 
     def test_activity_excludes_file_metadata_and_is_idempotent(self):
         source = FIXTURES / "gemini.html"
-        self.assertEqual(import_file(self.connection, source, "personal"), {
+        self.assertEqual(import_file(self.connection, source, "personal"), expected_result({
             "conversations": 2,
             "nodes": 5,
-        })
+        }))
         import_file(self.connection, source, "personal")
 
         messages = self.connection.execute(
@@ -52,7 +54,7 @@ class GeminiImportTest(unittest.TestCase):
 
     def test_notebook_container_is_searchable_and_idempotent(self):
         source = FIXTURES / "notebook.json"
-        self.assertEqual(import_file(self.connection, source, "personal"), {"memories": 1})
+        self.assertEqual(import_file(self.connection, source, "personal"), expected_result({"memories": 1}))
         import_file(self.connection, source, "personal")
 
         result = search(self.connection, "research")

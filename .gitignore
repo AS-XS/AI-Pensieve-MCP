@@ -35,3 +35,8 @@ __pycache__/
 
 # Operating-system files
 .DS_Store
+
+# Local package builds
+/build/
+/dist/
+*.egg-info/

@@ -4,6 +4,8 @@ import unittest
 from contextlib import closing
 from pathlib import Path
 
+from import_expectations import expected_result
+
 from archive_mcp.auto_import import discover, import_all, scan_summary, summary
 from archive_mcp.db import connect, integrity_status
 
@@ -73,6 +75,9 @@ class AutoImportTest(unittest.TestCase):
             first = import_all(connection, [self.root], "personal")
             second = import_all(connection, [self.root], "personal")
             self.assertNotEqual(first["batch_id"], second["batch_id"])
+            totals = dict(conversations=10, nodes=33, memories=6)
+            self.assertEqual(first['changes'], expected_result(totals)['changes'])
+            self.assertEqual(second['changes'], expected_result(totals, 'unchanged')['changes'])
             self.assertEqual(first["candidate_files"], 16)
             self.assertEqual(first["ignored_files"], 3)
             self.assertEqual(first["warnings"], {"unrecognized_format": 3})
@@ -98,6 +103,7 @@ class AutoImportTest(unittest.TestCase):
             result = import_all(connection, [empty])
             batch_id = result.pop("batch_id")
             self.assertEqual(result, {
+                "changes": {},
                 "candidate_files": 0,
                 "files": 0,
                 "ignored_files": 0,

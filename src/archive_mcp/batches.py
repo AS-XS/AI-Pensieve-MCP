@@ -23,6 +23,7 @@ def run_batch(connection, sources, account, mode, candidates=None, ignored=()):
         ).lastrowid
 
     totals = Counter(files=0, candidate_files=candidate_count)
+    changes = {}
     formats = Counter(kind for kind, _, _ in sources)
     warnings = [(None, "unrecognized_format", "") for _ in ignored]
 
@@ -30,7 +31,9 @@ def run_batch(connection, sources, account, mode, candidates=None, ignored=()):
         for kind, path, importer in sources:
             result = importer(connection, path, account)
             totals["files"] += 1
-            totals.update(result)
+            totals.update({key: value for key, value in result.items() if key != "changes"})
+            for record_type, counts in result.get("changes", {}).items():
+                changes.setdefault(record_type, Counter()).update(counts)
             if result.get("excluded_review_sessions"):
                 warnings.append((kind, "excluded_review_session", ""))
             if not result.get("nodes") and not result.get("memories"):
@@ -44,6 +47,7 @@ def run_batch(connection, sources, account, mode, candidates=None, ignored=()):
     return {
         "batch_id": batch_id,
         **dict(totals),
+        "changes": {kind: dict(counts) for kind, counts in changes.items()},
         "ignored_files": len(ignored),
         "formats": dict(sorted(formats.items())),
         "warnings": dict(sorted(

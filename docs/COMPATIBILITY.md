@@ -30,7 +30,7 @@ of every current export variant.
 
 | Client/surface | Archive integration evidence | Setup and official contract |
 | --- | --- | --- |
-| Bundled SDK STDIO demo | Current 12-tool demo tested locally on macOS/Python 3.13, 2026-09-11; previous 11-tool revision passed Ubuntu/Windows CI on Python 3.10/3.13 | [Demo scope](DEMO.md), [CI evidence](CLIENT_VERIFICATION.md#github-ci) |
+| Bundled SDK STDIO demo | Current 13-tool demo tested locally on macOS/Python 3.13, 2026-09-14; previous 11-tool revision passed Ubuntu/Windows CI on Python 3.10/3.13 | [Demo scope](DEMO.md), [CI evidence](CLIENT_VERIFICATION.md#github-ci) |
 | Codex CLI | Tested: 0.142.2 on macOS 26.6.2, 2026-09-10; temporary configuration, four explicit retrieval calls on synthetic data | [Verification](CLIENT_VERIFICATION.md#codex-cli), [setup](AI_CLIENTS.md#codex-cli-and-desktop), [official](https://learn.chatgpt.com/docs/extend/mcp?surface=cli) |
 | Codex-compatible desktop | Documented / current app integration unverified | [Setup](AI_CLIENTS.md#codex-cli-and-desktop), [official](https://learn.chatgpt.com/docs/extend/mcp?surface=cli) |
 | Codex IDE extension | Documented / untested | [Setup](AI_CLIENTS.md#codex-cli-and-desktop), [official](https://learn.chatgpt.com/docs/extend/mcp?surface=cli) |
@@ -55,6 +55,16 @@ installed client. They are not a blanket tested-client list. Model choice does
 not supply a missing client transport, and a client's tool-calling behavior
 still needs evaluation. No Windows or Linux third-party integration is certified
 by the macOS SDK demo. Version-specific setups not covered here are unverified.
+
+## Optional desktop GUI
+
+The illustrated [GUI prototype](GUI.md), including its door, chamber, bottle
+import/pour, overhead search and separate shelf library, was exercised on macOS with Python 3.13 and
+pywebview 6.2.1 on 2026-09-14: native folder selection, synthetic import/reimport,
+search, attributed conversation reading, apothecary artwork, and one-click
+return from the reader to the chamber. Windows and Linux GUI behavior is
+unverified; existing core test coverage does not certify their desktop engines.
+This is a local reader/importer, not another MCP client or a web/mobile bridge.
 
 ## Connections not supported by this project
 

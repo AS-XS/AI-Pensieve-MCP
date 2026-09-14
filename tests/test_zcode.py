@@ -8,6 +8,8 @@ from pathlib import Path
 
 from mcp import Client
 
+from import_expectations import expected_result
+
 from archive_mcp.auto_import import import_all, scan_summary, sqlite_format
 from archive_mcp.batches import run_batch
 from archive_mcp.cli import parser
@@ -84,8 +86,8 @@ class ZCodeImportTest(unittest.TestCase):
     def test_visible_dialogue_branches_provenance_and_repeat_import(self):
         original = self.source.read_bytes()
         expected = {'conversations': 1, 'nodes': 3}
-        self.assertEqual(import_file(self.db, self.source, 'personal'), expected)
-        self.assertEqual(import_file(self.db, self.source, 'personal'), expected)
+        self.assertEqual(import_file(self.db, self.source, 'personal'), expected_result(expected))
+        self.assertEqual(import_file(self.db, self.source, 'personal'), expected_result(expected, state='unchanged'))
         rows = self.db.execute('SELECT node_source_id, parent_source_id FROM messages ORDER BY id')
         self.assertEqual([tuple(r) for r in rows], [('user', None), ('left', 'user'), ('right', 'user')])
         matches = search(self.db, 'SQLite')
@@ -99,6 +101,27 @@ class ZCodeImportTest(unittest.TestCase):
         self.assertTrue(integrity_status(self.db)['ok'])
         self.assertEqual(self.source.read_bytes(), original)
         self.assertFalse(Path(str(self.source) + '-shm').exists())
+
+    def test_older_native_snapshot_cannot_replace_newer_text(self):
+        older = self.root / 'older.sqlite'
+        older.write_bytes(self.source.read_bytes())
+        import_file(self.db, older, 'personal')
+        with closing(sqlite3.connect(self.source)) as native, native:
+            native.execute("UPDATE session SET title='Newertitle', time_updated=time_updated+1000 WHERE id='session-1'")
+            native.execute("UPDATE part SET data=? WHERE id='part-user'",
+                           (json.dumps({'type': 'text', 'text': 'Newernativetext'}),))
+        original = (older.read_bytes(), self.source.read_bytes())
+        updated = import_file(self.db, self.source, 'personal')['changes']
+        self.assertEqual(updated['conversations']['updated'], 1)
+        self.assertEqual(updated['nodes']['updated'], 1)
+        protected = import_file(self.db, older, 'personal')['changes']
+        self.assertEqual(protected['conversations']['protected'], 1)
+        self.assertEqual(protected['nodes']['protected'], 1)
+        self.assertEqual(protected['nodes']['unchanged'], 2)
+        self.assertEqual(len(search(self.db, 'Newernativetext')), 1)
+        self.assertEqual(self.db.execute('SELECT title FROM conversations').fetchone()[0], 'Newertitle')
+        self.assertEqual((older.read_bytes(), self.source.read_bytes()), original)
+        self.assertTrue(integrity_status(self.db)['ok'])
 
     def test_detection_batch_and_explicit_cli(self):
         self.assertEqual(sqlite_format(self.source), 'zcode')

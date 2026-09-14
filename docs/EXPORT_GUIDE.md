@@ -194,7 +194,8 @@ It does not import request logs, credentials, settings, terminal output, or the
 desktop task index. The observed one-session database and synthetic tests have
 been checked; other ZCode versions and platforms remain unverified.
 
-`sync-local` still selects its original four providers; ZCode is imported
+The [GUI one-click action](GUI.md#one-click-local-session-import) also checks this
+observed ZCode path. `sync-local` still selects its original four providers; ZCode is imported
 explicitly or through a selected `exports` path in the refresh configuration.
 
 ### Other supported native stores

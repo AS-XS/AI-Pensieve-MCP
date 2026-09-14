@@ -8,11 +8,11 @@ procedure below; a backup is not required to use the archive.
 
 | Input or change | Current behavior |
 | --- | --- |
-| Same records, provider, and account label | Updates matching identities; no duplicate canonical records. Each CLI import batch still adds an operational record. |
+| Same records, provider, and account label | Preserves identical content without rewriting it; no duplicate canonical records. Each CLI import batch still adds an operational record. |
 | Changed account label | Creates a separate source identity; it does not rename the old account. |
-| ChatGPT, Claude, DeepSeek, Grok, Claude Code, Antigravity, OpenCode, Qwen Code, or saved context | Upserts imported records. Records absent from a later input generally remain in the existing database. |
-| Codex session reimport | Replaces retained messages for that session. Identified approval-review sessions remove their derived conversation. Other sessions remain. |
-| Gemini activity HTML reimport | Replaces all derived activity conversations for that Gemini account, then rebuilds inferred sessions from that one file. |
+| ChatGPT, Claude, DeepSeek, Grok, Claude Code, Antigravity, OpenCode, Qwen Code, ZCode, or saved context | Upserts imported records subject to the revision rules below. Records absent from a later input generally remain in the existing database. |
+| Codex session reimport | Upserts visible nodes and prunes parser-excluded nodes for accepted snapshots; older snapshots cannot replace matching fields or prune a newer tail. Identified approval-review sessions still remove their derived conversation. Other sessions remain. |
+| Gemini activity HTML reimport | Replaces that account's derived activity view from one file, updating matching identities and removing omitted sessions/nodes. |
 | A path/provider removed from the refresh configuration | Stops future imports from that selection; does not erase already indexed records. |
 | A source file deleted outside the archive | No general deletion synchronization. The importer cannot infer whether the missing source was intentionally deleted. |
 
@@ -22,9 +22,12 @@ imported file wins. A file that parses to zero activity entries also clears
 that account's derived activity. Keep the format limits in the
 [export guide](EXPORT_GUIDE.md#gemini-apps) in mind.
 
-For other upsert-based sources, importing older exports after newer ones can
-restore older text or missing records. Avoid selecting both stale and current
-copies when you intend to keep only the current snapshot. Refresh processes
+Conversation/session imports preserve newer dated metadata and matching message
+fields when an older or undated snapshot arrives. Unseen IDs can still restore
+missing records. Equal dates, two missing dates, and saved context without mapped
+edit dates still accept changed incoming content. Gemini retains its explicit
+replacement behavior. See [revision rules](SCHEMA.md#import-revision-policy) and
+[change counts](USER_GUIDE.md#read-the-import-counts). Refresh processes
 configured export entries in order; detected files within each entry are
 processed in sorted path order, followed by selected native stores.
 

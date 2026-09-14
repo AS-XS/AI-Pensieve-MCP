@@ -3,6 +3,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from import_expectations import expected_result
+
 from archive_mcp.db import connect, search
 from archive_mcp.grok import import_file
 
@@ -20,10 +22,10 @@ class GrokImportTest(unittest.TestCase):
         self.temp.cleanup()
 
     def test_import_preserves_branches_and_visible_dialogue_only(self):
-        self.assertEqual(import_file(self.connection, FIXTURE, "personal"), {
+        self.assertEqual(import_file(self.connection, FIXTURE, "personal"), expected_result({
             "conversations": 1,
             "nodes": 5,
-        })
+        }))
         import_file(self.connection, FIXTURE, "personal")
 
         self.assertEqual(self.connection.execute(
@@ -43,10 +45,10 @@ class GrokImportTest(unittest.TestCase):
     def test_empty_and_malformed_exports(self):
         empty = Path(self.temp.name) / "empty.json"
         empty.write_text('{"conversations": []}', encoding="utf-8")
-        self.assertEqual(import_file(self.connection, empty), {
+        self.assertEqual(import_file(self.connection, empty), expected_result({
             "conversations": 0,
             "nodes": 0,
-        })
+        }))
 
         malformed = Path(self.temp.name) / "malformed.json"
         malformed.write_text("{", encoding="utf-8")

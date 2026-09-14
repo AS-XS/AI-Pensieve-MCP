@@ -2,6 +2,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from import_expectations import expected_result
+
 from archive_mcp.chatgpt import import_file as import_chatgpt
 from archive_mcp.claude import import_file as import_claude
 from archive_mcp.db import connect, search
@@ -21,10 +23,10 @@ class ClaudeImportTest(unittest.TestCase):
 
     def test_import_normalizes_roles_and_is_idempotent(self):
         source = FIXTURES / "claude.json"
-        self.assertEqual(import_claude(self.connection, source, "personal"), {
+        self.assertEqual(import_claude(self.connection, source, "personal"), expected_result({
             "conversations": 1,
             "nodes": 2,
-        })
+        }))
         import_claude(self.connection, source, "personal")
 
         messages = self.connection.execute(

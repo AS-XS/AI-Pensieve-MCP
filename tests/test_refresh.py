@@ -4,6 +4,8 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
+from import_expectations import expected_result
+
 from archive_mcp.db import connect
 from archive_mcp.refresh import refresh_archive
 
@@ -38,6 +40,9 @@ class RefreshTest(unittest.TestCase):
             first["exports"].pop("batches"),
             second["exports"].pop("batches"),
         )
+        totals = dict(conversations=2, nodes=9)
+        self.assertEqual(first["exports"].pop("changes"), expected_result(totals)['changes'])
+        self.assertEqual(second["exports"].pop("changes"), expected_result(totals, 'unchanged')['changes'])
         self.assertEqual(first, second)
         self.assertEqual(first["exports"], {
             "candidate_files": 2,

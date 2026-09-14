@@ -3,6 +3,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from import_expectations import expected_result
+
 from archive_mcp.chatgpt import import_file
 from archive_mcp.db import connect, search
 
@@ -20,10 +22,10 @@ class ChatGPTImportTest(unittest.TestCase):
         self.temp.cleanup()
 
     def test_import_preserves_branches_and_is_idempotent(self):
-        self.assertEqual(import_file(self.connection, FIXTURE, "personal"), {
+        self.assertEqual(import_file(self.connection, FIXTURE, "personal"), expected_result({
             "conversations": 1,
             "nodes": 4,
-        })
+        }))
         import_file(self.connection, FIXTURE, "personal")
 
         self.assertEqual(self.connection.execute("SELECT count(*) FROM conversations").fetchone()[0], 1)

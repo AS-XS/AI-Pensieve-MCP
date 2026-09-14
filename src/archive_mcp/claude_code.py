@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 
 from .db import initialize
-from .importing import account_id, conversation_id, upsert_message
+from .importing import ImportChanges, account_id, conversation_id, upsert_message
 
 
 COMMAND_PREFIXES = ("<command-message>", "<command-name>", "<local-command-stdout>")
@@ -30,6 +30,7 @@ def message_text(row):
 
 
 def import_file(connection, source, account="default"):
+    changes = ImportChanges()
     source = Path(source)
     selected = []
     seen = set()
@@ -47,7 +48,7 @@ def import_file(connection, source, account="default"):
 
     initialize(connection)
     if not selected:
-        return {"conversations": 0, "nodes": 0}
+        return changes.result({"conversations": 0, "nodes": 0})
     with connection:
         source_account = account_id(connection, "claude-code", account)
         key = conversation_id(
@@ -55,6 +56,7 @@ def import_file(connection, source, account="default"):
             f"Claude Code session: {Path(cwd).name}",
             selected[0][0]["timestamp"], selected[-1][0]["timestamp"],
             "local_session",
+            changes=changes,
         )
         parent = None
         for row, text in selected:
@@ -62,7 +64,8 @@ def import_file(connection, source, account="default"):
             upsert_message(
                 connection, key, node_id, row["message"].get("id"), parent,
                 row["type"], text, row["timestamp"],
+                changes=changes,
             )
             parent = node_id
 
-    return {"conversations": 1, "nodes": len(selected)}
+    return changes.result({"conversations": 1, "nodes": len(selected)})

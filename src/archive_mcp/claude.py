@@ -2,10 +2,11 @@ import json
 from pathlib import Path
 
 from .db import initialize
-from .importing import account_id, conversation_id, upsert_message
+from .importing import ImportChanges, account_id, conversation_id, upsert_message
 
 
 def import_file(connection, source, account="default"):
+    changes = ImportChanges()
     source = Path(source)
     conversations = json.loads(source.read_text(encoding="utf-8-sig"))
     initialize(connection)
@@ -22,6 +23,7 @@ def import_file(connection, source, account="default"):
                 conversation.get("name", ""),
                 conversation.get("created_at"),
                 conversation.get("updated_at"),
+                changes=changes,
             )
             for message in conversation.get("chat_messages", []):
                 message_id = message["uuid"]
@@ -35,7 +37,8 @@ def import_file(connection, source, account="default"):
                     role,
                     message.get("text", ""),
                     message.get("created_at"),
+                    changes=changes,
                 )
                 message_count += 1
 
-    return {"conversations": len(conversations), "nodes": message_count}
+    return changes.result({"conversations": len(conversations), "nodes": message_count})

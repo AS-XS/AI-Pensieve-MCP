@@ -14,6 +14,7 @@ def refresh_archive(connection, config):
     formats = Counter()
     warnings = Counter()
     batches = []
+    changes = {}
 
     for export in data.get("exports", []):
         result = import_all(
@@ -23,6 +24,8 @@ def refresh_archive(connection, config):
         batches.append(result.pop("batch_id"))
         formats.update(result.pop("formats"))
         warnings.update(result.pop("warnings"))
+        for kind, values in result.pop("changes", {}).items():
+            changes.setdefault(kind, Counter()).update(values)
         counts.update(result)
 
     local = data.get("local")
@@ -34,6 +37,7 @@ def refresh_archive(connection, config):
     return {
         "exports": {
             "batches": batches,
+            "changes": {kind: dict(values) for kind, values in changes.items()},
             **dict(counts),
             "formats": dict(sorted(formats.items())),
             "warnings": dict(sorted(warnings.items())),

@@ -16,8 +16,19 @@ Selected exports / explicitly enabled native session stores
 
 Import and ordinary retrieval require no runtime network requests from this
 application. Installing dependencies and updates downloads software.
-The optional future browser GUI and enrichment are not part of this boundary
-yet and must have their data flows reviewed before release.
+The optional [desktop prototype](../GUI.md) uses a native webview with bundled
+HTML/CSS/JavaScript and a Python bridge directly to the same local import/search
+functions. It starts no HTTP server and requests no remote assets or model calls.
+Archived text is rendered as text, not executable HTML, and the page blocks
+network connections through its content security policy. Its import button can
+write the selected local archive; MCP remains read-only. The one-click local import action, or submitting an empty source with the
+unmarked bottle, searches the supported apps' known session folders only after
+you trigger it. It imports under the displayed account label; it does not scan
+the whole computer or download website chats. See [the exact locations](../GUI.md#one-click-local-session-import).
+GUI settings are kept
+in the current window, not synced to a service. It displays the database path
+and source identifiers locally. Future enrichment or remote access needs a
+separate data-flow review.
 
 ## What is stored
 

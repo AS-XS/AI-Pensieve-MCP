@@ -3,6 +3,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from import_expectations import expected_result
+
 from archive_mcp.db import connect, integrity_status, search
 from archive_mcp.auto_import import detect
 from archive_mcp.qwen_code import import_file
@@ -22,8 +24,8 @@ class QwenCodeImportTest(unittest.TestCase):
 
     def test_imports_dialogue_branches_only_and_is_idempotent(self):
         expected = {"conversations": 1, "nodes": 6}
-        self.assertEqual(import_file(self.connection, FIXTURE, "personal"), expected)
-        self.assertEqual(import_file(self.connection, FIXTURE, "personal"), expected)
+        self.assertEqual(import_file(self.connection, FIXTURE, "personal"), expected_result(expected))
+        self.assertEqual(import_file(self.connection, FIXTURE, "personal"), expected_result(expected, state='unchanged'))
 
         rows = self.connection.execute(
             "SELECT node_source_id, parent_source_id FROM messages ORDER BY created_at"
@@ -68,9 +70,9 @@ class QwenCodeImportTest(unittest.TestCase):
         }), encoding="utf-8-sig")
 
         self.assertEqual(detect(source), "qwen-code")
-        self.assertEqual(import_file(self.connection, source), {
+        self.assertEqual(import_file(self.connection, source), expected_result({
             "conversations": 1, "nodes": 2,
-        })
+        }))
         self.assertEqual(search(self.connection, "hiddenreasoningmarker"), [])
         self.assertEqual(len(search(self.connection, '"Visible JSON"')), 2)
 
@@ -122,9 +124,9 @@ class QwenCodeImportTest(unittest.TestCase):
         )
 
         self.assertEqual(detect(source), "qwen-code")
-        self.assertEqual(import_file(self.connection, source), {
+        self.assertEqual(import_file(self.connection, source), expected_result({
             "conversations": 1, "nodes": 3,
-        })
+        }))
         parent = self.connection.execute(
             "SELECT parent_source_id FROM messages WHERE node_source_id = 'assistant-2'"
         ).fetchone()[0]
@@ -139,9 +141,9 @@ class QwenCodeImportTest(unittest.TestCase):
             "startTime": "2025-01-02T15:04:05Z",
             "messages": [],
         }), encoding="utf-8")
-        self.assertEqual(import_file(self.connection, empty), {
+        self.assertEqual(import_file(self.connection, empty), expected_result({
             "conversations": 1, "nodes": 0,
-        })
+        }))
 
         malformed = Path(self.temp.name) / "malformed.jsonl"
         malformed.write_text("{", encoding="utf-8")

@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 
 from .db import initialize
-from .importing import account_id, conversation_id, upsert_message
+from .importing import ImportChanges, account_id, conversation_id, upsert_message
 
 
 def message_text(row):
@@ -37,6 +37,7 @@ def load(source):
 
 
 def import_file(connection, source, account="default"):
+    changes = ImportChanges()
     source = Path(source)
     metadata, rows = load(source)
     selected = [
@@ -59,6 +60,7 @@ def import_file(connection, source, account="default"):
             metadata.get("startTime"),
             selected[-1][0].get("timestamp") if selected else metadata.get("startTime"),
             "local_session",
+            changes=changes,
         )
         for row, body in selected:
             parent = row.get("parentUuid")
@@ -67,6 +69,7 @@ def import_file(connection, source, account="default"):
             upsert_message(
                 connection, key, row["uuid"], row["uuid"], parent,
                 row["type"], body, row.get("timestamp"),
+                changes=changes,
             )
 
-    return {"conversations": 1, "nodes": len(selected)}
+    return changes.result({"conversations": 1, "nodes": len(selected)})

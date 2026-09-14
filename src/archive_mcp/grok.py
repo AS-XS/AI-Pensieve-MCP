@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 
 from .db import initialize
-from .importing import account_id, conversation_id, upsert_message
+from .importing import ImportChanges, account_id, conversation_id, upsert_message
 
 
 def response_time(response):
@@ -10,6 +10,7 @@ def response_time(response):
 
 
 def import_file(connection, source, account="default"):
+    changes = ImportChanges()
     source = Path(source)
     conversations = json.loads(source.read_text(encoding="utf-8-sig")).get("conversations", [])
     initialize(connection)
@@ -27,6 +28,7 @@ def import_file(connection, source, account="default"):
                 conversation.get("title", ""),
                 conversation.get("create_time"),
                 conversation.get("modify_time"),
+                changes=changes,
             )
             for wrapper in item.get("responses", []):
                 response = wrapper["response"]
@@ -41,7 +43,8 @@ def import_file(connection, source, account="default"):
                     role,
                     response.get("message") or "",
                     response_time(response),
+                    changes=changes,
                 )
                 node_count += 1
 
-    return {"conversations": len(conversations), "nodes": node_count}
+    return changes.result({"conversations": len(conversations), "nodes": node_count})

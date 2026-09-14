@@ -3,6 +3,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from import_expectations import expected_result
+
 from archive_mcp.db import connect, search
 from archive_mcp.opencode import import_file
 
@@ -21,8 +23,8 @@ class OpenCodeImportTest(unittest.TestCase):
 
     def test_imports_visible_dialogue_only_and_is_idempotent(self):
         expected = {"conversations": 1, "nodes": 2}
-        self.assertEqual(import_file(self.connection, FIXTURE, "personal"), expected)
-        self.assertEqual(import_file(self.connection, FIXTURE, "personal"), expected)
+        self.assertEqual(import_file(self.connection, FIXTURE, "personal"), expected_result(expected))
+        self.assertEqual(import_file(self.connection, FIXTURE, "personal"), expected_result(expected, state='unchanged'))
 
         rows = self.connection.execute(
             "SELECT role, parent_source_id FROM messages ORDER BY created_at"
@@ -46,10 +48,10 @@ class OpenCodeImportTest(unittest.TestCase):
             },
             "messages": [],
         }), encoding="utf-8-sig")
-        self.assertEqual(import_file(self.connection, empty), {
+        self.assertEqual(import_file(self.connection, empty), expected_result({
             "conversations": 1,
             "nodes": 0,
-        })
+        }))
 
         malformed = Path(self.temp.name) / "malformed.json"
         malformed.write_text("{", encoding="utf-8")

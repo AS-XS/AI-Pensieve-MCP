@@ -30,18 +30,23 @@ def sync_local(
         provider not in LOCAL_PROVIDERS for provider in providers
     ):
         raise ValueError("local providers must be a list of supported provider names")
+    sources = local_sources(codex_root, claude_root, antigravity_root, qwen_root, providers)
+    result = run_batch(connection, sources, account, "local")
+    result["selected_providers"] = [kind for kind in LOCAL_PROVIDERS if kind in providers]
+    return result
+
+
+def local_sources(codex_root, claude_root, antigravity_root, qwen_root, providers=LOCAL_PROVIDERS):
+    """Enumerate supported session files only within known native roots."""
     groups = (
         ("codex", import_codex, codex_root, "**/*.jsonl"),
         ("claude-code", import_claude_code, claude_root, "*/*.jsonl"),
         ("antigravity", import_antigravity, antigravity_root, "*.db"),
         ("qwen-code", import_qwen_code, qwen_root, "*/chats/**/*.jsonl"),
     )
-    sources = [
+    return [
         (kind, path, importer)
         for kind, importer, root, pattern in groups
         if kind in providers
         for path in sorted(Path(root).glob(pattern))
     ]
-    result = run_batch(connection, sources, account, "local")
-    result["selected_providers"] = [kind for kind in LOCAL_PROVIDERS if kind in providers]
-    return result

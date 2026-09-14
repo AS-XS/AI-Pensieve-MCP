@@ -12,3 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+Bundled provider marks in src/archive_mcp/gui_assets/logos are from
+@lobehub/icons-static-svg 1.95.0, Copyright 2023 LobeHub, MIT License.
+Their license is included in that directory. See docs/ARTWORK.md.

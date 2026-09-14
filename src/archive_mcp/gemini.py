@@ -6,7 +6,7 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 from .db import initialize
-from .importing import account_id, conversation_id, upsert_memory, upsert_message
+from .importing import ImportChanges, delete_conversation, prune_messages, account_id, conversation_id, upsert_memory, upsert_message
 
 
 ACTIVITY_DATE = re.compile(
@@ -83,7 +83,7 @@ def activity_time(value):
     return parsed.replace(tzinfo=timezone(-timedelta(hours=6))).timestamp()
 
 
-def import_activity(connection, source, account):
+def import_activity(connection, source, account, changes):
     parser = ActivityParser()
     parser.feed(source.read_text(encoding="utf-8-sig"))
     source_account = account_id(connection, "gemini", account)
@@ -96,54 +96,68 @@ def import_activity(connection, source, account):
             sessions.append([])
         sessions[-1].append((created_at, entry))
 
-    connection.execute(
-        "DELETE FROM conversations WHERE account_id = ? AND "
+    existing = connection.execute(
+        "SELECT * FROM conversations WHERE account_id = ? AND "
         "(source_id LIKE 'activity:%' OR source_id LIKE 'activity-session:%')",
         (source_account,),
-    )
+    ).fetchall()
+    retained_sessions = set()
     node_count = 0
     for session in sessions:
         started_at, ended_at = session[0][0], session[-1][0]
         key = conversation_id(
             connection, source_account, f"activity-session:{int(started_at)}", source,
             "Gemini activity session", started_at, ended_at, "activity_session",
+            changes=changes, revision_check=False,
         )
+        retained_sessions.add(key)
+        retained_nodes = set()
         parent = None
         for created_at, entry in session:
             user_id = f"activity:{entry['date']}:user"
             upsert_message(
                 connection, key, user_id, None, parent,
                 "user", entry["prompt"], created_at,
+                changes=changes,
             )
             node_count += 1
+            retained_nodes.add(user_id)
             parent = user_id
             if entry["response"]:
                 assistant_id = f"activity:{entry['date']}:assistant"
                 upsert_message(
                     connection, key, assistant_id, None, parent,
                     "assistant", entry["response"], created_at,
+                    changes=changes,
                 )
                 node_count += 1
+                retained_nodes.add(assistant_id)
                 parent = assistant_id
+        prune_messages(connection, key, retained_nodes, changes)
+    for row in existing:
+        if row['id'] not in retained_sessions:
+            delete_conversation(connection, row, changes)
 
-    return {"conversations": len(sessions), "nodes": node_count}
+    return changes.result({"conversations": len(sessions), "nodes": node_count})
 
 
-def import_notebook(connection, source, account):
+def import_notebook(connection, source, account, changes):
     data = json.loads(source.read_text(encoding="utf-8-sig"))
     created_at = data["metadata"]["createTime"]
     source_account = account_id(connection, "notebooklm", account)
     upsert_memory(
         connection, source_account, f"notebook:{created_at}", source,
         "notebook", data["title"], data["title"], created_at,
+        changes=changes,
     )
-    return {"memories": 1}
+    return changes.result({"memories": 1})
 
 
 def import_file(connection, source, account="default"):
+    changes = ImportChanges()
     source = Path(source)
     initialize(connection)
     with connection:
         if source.suffix == ".json":
-            return import_notebook(connection, source, account)
-        return import_activity(connection, source, account)
+            return import_notebook(connection, source, account, changes)
+        return import_activity(connection, source, account, changes)

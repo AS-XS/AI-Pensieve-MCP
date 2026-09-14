@@ -3,6 +3,8 @@ import unittest
 import json
 from pathlib import Path
 
+from import_expectations import expected_result
+
 from archive_mcp.codex_local import import_file
 from archive_mcp.db import connect, search
 
@@ -20,10 +22,10 @@ class CodexLocalImportTest(unittest.TestCase):
         self.temp.cleanup()
 
     def test_import_keeps_dialogue_only_and_is_idempotent(self):
-        self.assertEqual(import_file(self.connection, FIXTURE, "personal"), {
+        self.assertEqual(import_file(self.connection, FIXTURE, "personal"), expected_result({
             "conversations": 1,
             "nodes": 2,
-        })
+        }))
         import_file(self.connection, FIXTURE, "personal")
 
         rows = self.connection.execute(
@@ -72,9 +74,9 @@ class CodexLocalImportTest(unittest.TestCase):
         ]
         source.write_text("\n".join(json.dumps(row) for row in rows) + "\n")
         result = import_file(self.connection, source, "personal")
-        self.assertEqual(result, {
+        self.assertEqual(result, expected_result({
             "conversations": 0, "nodes": 0, "excluded_review_sessions": 1,
-        })
+        }))
         self.assertEqual(search(self.connection, "Review result"), [])
         self.assertEqual(search(self.connection, "ordinary answer"), [])
         self.assertEqual(self.connection.execute("SELECT count(*) FROM conversations").fetchone()[0], 0)

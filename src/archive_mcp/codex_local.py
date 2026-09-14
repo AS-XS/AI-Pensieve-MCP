@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 
 from .db import initialize
-from .importing import account_id, conversation_id, upsert_message
+from .importing import ImportChanges, delete_conversation, prune_messages, account_id, conversation_id, upsert_message
 
 
 INJECTED_PREFIXES = (
@@ -51,6 +51,7 @@ def messages(rows):
 
 
 def import_file(connection, source, account="default"):
+    changes = ImportChanges()
     source = Path(source)
     rows = [json.loads(line) for line in source.read_text(encoding="utf-8-sig").splitlines()]
     metadata = next(row["payload"] for row in rows if row.get("type") == "session_meta")
@@ -69,28 +70,32 @@ def import_file(connection, source, account="default"):
             # reviewer traffic, rather than ordinary user dialogue. Exclude
             # the whole derived session once the marker is observed; the raw
             # JSONL source remains untouched and can be re-imported later.
-            connection.execute(
-                "DELETE FROM conversations WHERE account_id = ? AND source_id = ?",
+            existing = connection.execute(
+                "SELECT * FROM conversations WHERE account_id = ? AND source_id = ?",
                 (source_account, source_id),
-            )
-            return {"conversations": 0, "nodes": 0, "excluded_review_sessions": 1}
+            ).fetchone()
+            if existing:
+                delete_conversation(connection, existing, changes)
+            return changes.result({"conversations": 0, "nodes": 0, "excluded_review_sessions": 1})
         created_at = metadata["timestamp"]
         updated_at = selected[-1][1]["timestamp"] if selected else created_at
         title = f"Codex session: {Path(metadata['cwd']).name}"
         key = conversation_id(
             connection, source_account, source_id, source,
             title, created_at, updated_at, "local_session",
+            changes=changes,
         )
-        # Rebuild this derived session snapshot so records excluded by the
-        # current parser cannot survive an idempotent re-import.
-        connection.execute("DELETE FROM messages WHERE conversation_id = ?", (key,))
+        # Keep matching rows stable; prune parser-excluded nodes only when
+        # this snapshot is at least as recent as the stored session.
+        prune_messages(connection, key, {f"line:{row[0]}" for row in selected}, changes)
         parent = None
         for line_number, row, item, text in selected:
             node_id = f"line:{line_number}"
             upsert_message(
                 connection, key, node_id, item.get("id"), parent,
                 item["role"], text, row["timestamp"],
+                changes=changes,
             )
             parent = node_id
 
-    return {"conversations": 1, "nodes": len(selected)}
+    return changes.result({"conversations": 1, "nodes": len(selected)})

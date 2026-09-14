@@ -4,6 +4,8 @@ import unittest
 from contextlib import closing
 from pathlib import Path
 
+from import_expectations import expected_result
+
 from archive_mcp.antigravity import import_file
 from archive_mcp.db import connect, search
 
@@ -65,10 +67,10 @@ class AntigravityImportTest(unittest.TestCase):
         self.temp.cleanup()
 
     def test_import_keeps_dialogue_only_and_is_idempotent(self):
-        self.assertEqual(import_file(self.connection, self.source, "personal"), {
+        self.assertEqual(import_file(self.connection, self.source, "personal"), expected_result({
             "conversations": 1,
             "nodes": 2,
-        })
+        }))
         import_file(self.connection, self.source, "personal")
 
         rows = self.connection.execute(

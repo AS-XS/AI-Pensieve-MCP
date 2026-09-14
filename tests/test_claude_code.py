@@ -2,6 +2,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from import_expectations import expected_result
+
 from archive_mcp.claude_code import import_file
 from archive_mcp.db import connect, search
 
@@ -19,10 +21,10 @@ class ClaudeCodeImportTest(unittest.TestCase):
         self.temp.cleanup()
 
     def test_import_keeps_final_dialogue_only_and_is_idempotent(self):
-        self.assertEqual(import_file(self.connection, FIXTURE, "personal"), {
+        self.assertEqual(import_file(self.connection, FIXTURE, "personal"), expected_result({
             "conversations": 1,
             "nodes": 2,
-        })
+        }))
         import_file(self.connection, FIXTURE, "personal")
 
         rows = self.connection.execute(

@@ -2,6 +2,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from import_expectations import expected_result
+
 from archive_mcp.db import connect, search
 from archive_mcp.memories import import_file
 
@@ -19,7 +21,7 @@ class MemoryImportTest(unittest.TestCase):
         self.temp.cleanup()
 
     def test_memory_is_searchable_and_idempotent(self):
-        self.assertEqual(import_file(self.connection, FIXTURE, "personal"), {"memories": 1})
+        self.assertEqual(import_file(self.connection, FIXTURE, "personal"), expected_result({"memories": 1}))
         import_file(self.connection, FIXTURE, "personal")
 
         result = search(self.connection, "calm")

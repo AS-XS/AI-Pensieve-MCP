@@ -1,5 +1,7 @@
 # [AI Pensieve MCP](https://github.com/AS-XS/AI-Pensieve-MCP)
 
+中文版：[README](README.zh-CN.md) · [客户端设置](docs/AI_CLIENTS.zh-CN.md) · [用户指南](docs/USER_GUIDE.zh-CN.md)
+
 Search your imported AI conversations from your preferred MCP client.
 
 > **Privacy:** the archive is stored locally and MCP access is read-only.
@@ -32,6 +34,9 @@ New-Item -ItemType Directory -Force imports, runtime | Out-Null
 py -3 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
+
+Open the magical memory room with `pensieve`: [optional GUI setup and guide](docs/GUI.md).
+It provides folder import, search, and a conversation reader.
 
 ## 2. Import selected history
 

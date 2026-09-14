@@ -5,6 +5,8 @@ import unittest
 from contextlib import closing
 from pathlib import Path
 
+from import_expectations import expected_result
+
 from archive_mcp.auto_import import import_all, scan_summary
 from archive_mcp.batches import run_batch
 from archive_mcp.claude_code import import_file as import_claude_code
@@ -38,6 +40,9 @@ class ImportReliabilityTest(unittest.TestCase):
                     again = import_all(db, [inputs])
                     result.pop("batch_id")
                     again.pop("batch_id")
+                    totals = dict(conversations=10, nodes=33, memories=6)
+                    self.assertEqual(result.pop("changes"), expected_result(totals)['changes'])
+                    self.assertEqual(again.pop("changes"), expected_result(totals, 'unchanged')['changes'])
                     self.assertEqual(result, again)
                     self.assertEqual(result["files"], len(names))
                     if expected is None:
