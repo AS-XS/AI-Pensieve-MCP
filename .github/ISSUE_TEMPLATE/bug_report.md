@@ -1,38 +1,33 @@
 ---
 name: Bug report
-about: Create a report to help us improve
+about: Report an import, retrieval, MCP connection, or desktop GUI problem
 title: ''
 labels: ''
 assignees: ''
-
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+**Keep private data out of this public issue**
+Use invented examples. Do not attach conversation exports, archive databases,
+credentials, or logs/screenshots containing private text, account details, or
+personal paths. Report suspected security or privacy vulnerabilities through
+[GitHub Private Vulnerability Reporting](https://github.com/AS-XS/AI-Pensieve-MCP/security/advisories/new).
 
-**To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+**What happened?**
+Describe the problem and what you expected instead.
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+**How can we reproduce it?**
+List the steps and commands, replacing private values with placeholders.
+If needed, include a small synthetic example that preserves the failing format.
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+**Environment**
 
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
+- Operating system and version:
+- Python version (`python --version`, using your installed environment):
+- Pensieve version or Git commit:
+- Installation method (ZIP/clone, core or optional GUI):
+- Affected workflow (import, CLI search, MCP, or GUI):
+- Import provider/format, if relevant:
+- MCP client and version, if relevant:
 
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
-
-**Additional context**
-Add any other context about the problem here.
+**Error or screenshot (optional)**
+Include only the smallest useful excerpt or image after removing private data.

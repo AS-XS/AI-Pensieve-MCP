@@ -1,17 +1,14 @@
 # Client and platform verification
 
-Checked on 2026-09-10. These results apply to the versions, source revision,
-and flows below; they are not blanket compatibility claims.
-
-The subsequent 2026-09-11 import/sweep changes passed 87 local tests and
-12 documented STDIO calls, as recorded in [development](DEVELOPMENT.md).
-The historical CI and Codex results below do not cover that newer tool yet.
+CI updated on 2026-09-14; the Codex CLI check below remains dated 2026-09-10.
+These results apply to the versions, source revisions, and flows listed here;
+they are not blanket compatibility claims.
 
 ## GitHub CI
 
-[Run 34554072217](https://github.com/AS-XS/AI-Pensieve-MCP/actions/runs/34554072217)
+[Run 34867588894](https://github.com/AS-XS/AI-Pensieve-MCP/actions/runs/34867588894)
 completed successfully for source commit
-`f68bb1dce890c2a768827a2ea523aebc3bb872ca`.
+`a6a0aff87d4816d1173408f08e6765a1768c9b92` on 2026-09-14.
 All four jobs passed:
 
 | GitHub runner | Python | Result |
@@ -21,12 +18,22 @@ All four jobs passed:
 | Windows latest | 3.10 | Passed |
 | Windows latest | 3.13 | Passed |
 
-The workflow installs requirements, runs the synthetic unittest suite, runs
-the real STDIO demo, and checks its success fields. This validates those
-automated server flows on the runners. It does not verify an AI application's
-Windows/Linux registration, vendor export UI, or every native session format.
-The runner labels are moving labels, not a promise about a fixed OS version.
-The repository is currently private; viewing these CI links requires access.
+The workflow uses `actions/checkout@v7` and `actions/setup-python@v7`, installs
+requirements, runs 134 synthetic unit tests, runs the 13-tool real STDIO demo,
+and checks its success fields. It also runs the synthetic retrieval evaluation
+and enforces the [documented baseline](RETRIEVAL_EVALUATION.md#continuous-integration).
+All four jobs had no check annotations.
+
+This validates those automated server flows on the runners. It does not verify
+an AI application's Windows/Linux registration, vendor export UI, every native
+session format, or native GUI rendering. See the separate
+[GUI verification scope](GUI.md#local-architecture-and-current-limits).
+Runner labels are moving labels, not a promise about a fixed OS version.
+The repository and its CI results are public.
+
+The earlier [run 34554072217](https://github.com/AS-XS/AI-Pensieve-MCP/actions/runs/34554072217)
+passed the original four-job matrix for `f68bb1d`; the Codex CLI check below
+uses that earlier revision, not the newer CI revision.
 
 ## Codex CLI
 

@@ -14,9 +14,10 @@ checklist, not a security certification.
 - [x] Provide a temporary synthetic demo that verifies import, integrity, real STDIO pagination/comparison, and original-message retrieval locally on macOS and in Ubuntu/Windows CI.
 - [x] Verify the Git-eligible source layout in isolation from local configuration and private archives; 79 tests, demo, and evaluation pass using installed dependencies. See [verification scope](DEVELOPMENT.md).
 - [x] Add CI and contributor/security reporting guidance.
+- [x] Activate the main-branch ruleset with PRs, four required CI checks, linear history, and blocked force-push/deletion; enable secret scanning and push protection (2026-09-14).
 - [x] Enable GitHub private vulnerability reporting for the public repository and verify the enabled state (2026-09-14). See [security reporting](../SECURITY.md).
 - [x] Review all root Markdown and public documentation against implementation and official sources; record corrections and verification limits in [documentation audit](DOCUMENTATION_AUDIT.md).
-- [x] Confirm successful Ubuntu/Windows CI runs on Python 3.10 and 3.13 for `f68bb1d`; see the [run and scope](CLIENT_VERIFICATION.md#github-ci).
+- [x] Confirm successful Ubuntu/Windows CI runs on Python 3.10 and 3.13 for `a6a0aff`, including synthetic retrieval evaluation; see the [run and scope](CLIENT_VERIFICATION.md#github-ci).
 - [x] Review intended source files and local Git history for private material before the initial upload; publish a clean initial history with a GitHub noreply author address. This bounded review is not a secret-detection guarantee.
 - [x] Test a clean clone of the initial source commit on macOS/Python 3.13: 79 tests and the real STDIO demo passed; retrieval evaluation reproduced its documented lexical-search limitation.
 - [x] Validate a fresh dependency installation from requirements.txt in that clone, including pip check.
@@ -28,8 +29,10 @@ checklist, not a security certification.
 - [x] Upload the reviewed initial source to the selected repository and verify its main branch on GitHub (2026-09-10).
 - [ ] Complete remaining release checks and publish a versioned release. The repository is public as of 2026-09-14; public visibility alone is not a versioned release.
 
-A GUI, semantic search, and personal reflection are later milestones. They are
-not necessary to release a useful developer archive.
+The optional [illustrated desktop GUI](GUI.md) is implemented and tested on
+macOS with synthetic data. Windows/Linux rendering and assistive-technology
+validation remain pending. Semantic search and personal reflection remain
+later milestones; they are not prerequisites for a useful developer release.
 
 Current privacy limits are explained in the [privacy guide](privacy/README.md).
 Test commands are in [development](DEVELOPMENT.md).
