@@ -12,6 +12,17 @@ dependencies. It provides both `ai-pensieve` and `pensieve` commands.
 uvx ai-pensieve
 ```
 
+Try invented ChatGPT and Claude memories without selecting personal history:
+
+```sh
+uvx ai-pensieve --demo
+```
+
+Open a shelf and choose **Connect to an AI** to copy configuration for your
+own archive. Paste it into your client's settings and restart that client;
+Pensieve does not edit client settings automatically. Demo mode uses a temporary
+archive and removes its example files when the window closes normally.
+
 Or install with pipx, then launch:
 
 ```sh

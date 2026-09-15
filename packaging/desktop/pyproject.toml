@@ -4,14 +4,14 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ai-pensieve"
-version = "0.1.0"
+version = "0.2.0"
 description = "An illustrated local desktop archive for your AI conversations"
 readme = "README.md"
 requires-python = ">=3.10"
 license = "Apache-2.0"
 license-files = ["LICENSE", "NOTICE"]
 classifiers = ["Development Status :: 3 - Alpha", "Programming Language :: Python :: 3"]
-dependencies = ["ai-pensieve-mcp[gui]==0.1.0"]
+dependencies = ["ai-pensieve-mcp[gui]==0.2.0"]
 
 [project.scripts]
 ai-pensieve = "archive_mcp.gui:main"

@@ -3,7 +3,7 @@
   "name": "io.github.AS-XS/ai-pensieve-mcp",
   "title": "AI Pensieve MCP",
   "description": "Search and cross-reference local AI chat history with read-only tools and source citations.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "repository": {
     "url": "https://github.com/AS-XS/AI-Pensieve-MCP",
     "source": "github"
@@ -14,7 +14,7 @@
       "registryType": "pypi",
       "registryBaseUrl": "https://pypi.org",
       "identifier": "ai-pensieve-mcp",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "runtimeHint": "uvx",
       "transport": { "type": "stdio" },
       "packageArguments": [

@@ -75,7 +75,7 @@ checkout, or use the source command above during development.
 
 ## Try without private history
 
-With the current source installed, launch:
+With desktop version 0.2.0 or newer installed, launch:
 
 ```sh
 pensieve --demo

@@ -48,9 +48,9 @@ use your personal `~/.cursor/mcp.json`. Merge this server with existing entries
 instead of replacing the entire configuration file, then restart the client.
 On Windows, JSON paths need escaped backslashes or forward slashes.
 
-The source GUI's **shelf → Connect to an AI** fills these values for the current
+The GUI's **shelf → Connect to an AI** fills these values for the current
 archive and includes a Python fallback when uvx is unavailable. This view is
-not in PyPI 0.1.0. These three formats were checked against
+introduced in 0.2.0. These three formats were checked against
 [Codex](https://learn.chatgpt.com/docs/extend/mcp?surface=cli),
 [Claude Desktop](https://modelcontextprotocol.io/docs/develop/connect-local-servers),
 and [Cursor](https://prod.cursor.com/help/customization/mcp) documentation on
