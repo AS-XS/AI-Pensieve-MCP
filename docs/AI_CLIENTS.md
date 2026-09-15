@@ -12,8 +12,57 @@ in that app. See the [client evidence matrix](COMPATIBILITY.md#mcp-clients) and
 [connections not supported](COMPATIBILITY.md#connections-not-supported-by-this-project).
 Menu labels and supported platforms depend on client version.
 
-Complete the main README setup and import steps first. The database should exist
-at `runtime/archive.sqlite` before registering the server.
+Import an archive first using the [desktop](GUI.md) or [CLI](USER_GUIDE.md).
+Use its absolute database path; a packaged desktop archive is normally outside
+the checkout. The library footer shows its location.
+
+## Package installation
+
+With uv installed, a local MCP client can launch `uvx` with arguments
+`ai-pensieve-mcp` and your absolute database path. No checkout or `PYTHONPATH`
+is needed. If a desktop client cannot find `uvx`, use its absolute executable path.
+
+Codex configuration in `~/.codex/config.toml` (or `$CODEX_HOME/config.toml`):
+
+```toml
+[mcp_servers.ai-pensieve-mcp]
+command = "uvx"
+args = ["ai-pensieve-mcp", "/absolute/path/to/archive.sqlite"]
+```
+
+Claude Desktop and Cursor use this JSON server entry:
+
+```json
+{
+  "mcpServers": {
+    "ai-pensieve-mcp": {
+      "command": "uvx",
+      "args": ["ai-pensieve-mcp", "/absolute/path/to/archive.sqlite"]
+    }
+  }
+}
+```
+
+In Claude Desktop, open **Settings → Developer → Edit Config**. For Cursor,
+use your personal `~/.cursor/mcp.json`. Merge this server with existing entries
+instead of replacing the entire configuration file, then restart the client.
+On Windows, JSON paths need escaped backslashes or forward slashes.
+
+The source GUI's **shelf → Connect to an AI** fills these values for the current
+archive and includes a Python fallback when uvx is unavailable. This view is
+not in PyPI 0.1.0. These three formats were checked against
+[Codex](https://learn.chatgpt.com/docs/extend/mcp?surface=cli),
+[Claude Desktop](https://modelcontextprotocol.io/docs/develop/connect-local-servers),
+and [Cursor](https://prod.cursor.com/help/customization/mcp) documentation on
+2026-09-15. Codex CLI has the synthetic test coverage described below; the
+Codex desktop, Claude Desktop, and Cursor integration flows remain unverified.
+
+## Source checkout recipes
+
+The remaining recipes use the virtual environment and example database from
+[source installation](SOURCE_INSTALL.md). For a package installation, retain
+the client's configuration structure but use the uvx command and arguments above
+instead of the Python module invocation and `PYTHONPATH`.
 
 ## Paths
 

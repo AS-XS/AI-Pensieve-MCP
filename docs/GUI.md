@@ -26,7 +26,7 @@ For isolated uvx/pipx installation and PyPI release status, see the
 a downloaded source checkout.
 
 Start in the extracted project folder with the virtual environment from the
-[README](../README.md). GUI dependencies are separate from the core installation.
+[source installation guide](SOURCE_INSTALL.md). GUI dependencies are separate from the core installation.
 These commands download the optional desktop packages from PyPI and install this
 local checkout; there is no shell installer or remote script.
 
@@ -75,16 +75,38 @@ checkout, or use the source command above during development.
 
 ## Try without private history
 
-Launch with an unused disposable archive, for example:
+With the current source installed, launch:
 
 ```sh
-pensieve --database runtime/gui-demo.sqlite
+pensieve --demo
 ```
 
-Open the door, touch the Pensieve, and choose **Import a memory → Choose folder** and select the repository's `fixtures`
-folder. Leave auto-detect selected, use an account label such as `synthetic-demo`,
-and import. Search for `archive`, then choose a result. The fixture folder
-includes deliberately unrecognized evaluation JSON; those files are skipped.
+Open the door, touch the Pensieve, and choose **Import a memory**. The source
+field already points to invented ChatGPT and Claude exports. Leave **Unmarked**
+selected, inspect the selection, and pour it in. Search for `garden` or `research`,
+then open a smoke result. No checkout or personal export is needed for this mode.
+It uses a temporary archive, confines selection and local discovery to the
+examples, and removes the temporary files when the window closes normally.
+An abrupt process termination can leave temporary files for the operating system
+to clean up. `--demo` cannot be combined with `--database`.
+
+For a persistent recording archive using the repository fixtures, use
+`pensieve --database runtime/gui-demo.sqlite` and select `fixtures` manually.
+
+## Connect the current archive to an AI
+
+Open either shelf, then **Connect to an AI**. Choose Codex, Claude Desktop,
+Cursor, or generic local STDIO. Review and copy the configuration, merge its
+server entry into your client's settings, and restart that client.
+The view uses this archive's absolute path and displays the relevant settings
+location and verification status. Existing client settings are never edited.
+
+When `uvx` is available, the copied command uses its absolute path. Otherwise it
+uses this installation's Python and module directory; copy a fresh configuration
+if that installation moves or is replaced. This connection action is disabled
+for the temporary demo archive. Import into your own archive first.
+The MCP tools are read-only; the connected client may send retrieved text to its
+model provider. Web/mobile apps without local STDIO support cannot use this setup.
 
 ## Import your history
 

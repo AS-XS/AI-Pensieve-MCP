@@ -11,7 +11,8 @@ normal exit or a handled error; forced termination can leave temporary files.
 The demo needs no AI account, model, client registration, or network connection
 after the project dependencies are installed.
 
-After setup:
+For the interactive temporary desktop demo, see [Try without private history](GUI.md#try-without-private-history).
+The developer checks below require a checkout with fixtures, after [source installation](SOURCE_INSTALL.md):
 
 macOS/Linux:
 

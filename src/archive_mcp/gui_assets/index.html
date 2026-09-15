@@ -99,6 +99,7 @@
             <button id="browse-library" class="quiet">
               Browse the collection</button
             ><button id="empty-import" class="quiet">Add a memory</button>
+            <button id="connect-ai" class="quiet">Connect to an AI</button>
           </div>
           <form id="search-form" class="searchbar">
             <label class="sr-only" for="query">Search memories</label
@@ -132,7 +133,7 @@
         </section>
         <section id="import-view" hidden>
           <form id="import-form" aria-label="Import a memory">
-            <div class="quick-import">
+            <div class="quick-import" id="quick-import">
               <button type="button" id="import-local">
                 Find &amp; import local sessions
               </button>
@@ -198,6 +199,27 @@
           </form>
           <section id="import-result" aria-live="polite" hidden></section>
         </section>
+        <section id="connect-view" hidden>
+          <p>Copy the configuration below into your AI client's settings. This window does not set up the client automatically.</p>
+          <p>Your AI client can read this archive. Retrieved excerpts may be sent to its model provider.</p>
+          <label for="connection-client">AI client</label>
+          <select id="connection-client">
+            <option value="codex">Codex</option>
+            <option value="claude-desktop">Claude Desktop</option>
+            <option value="cursor">Cursor</option>
+            <option value="generic">Other local STDIO client</option>
+          </select>
+          <p id="connection-instructions"></p>
+          <p id="connection-evidence" class="hint"></p>
+          <p id="connection-launcher" class="hint"></p>
+          <label for="connection-config">Configuration for this archive</label>
+          <textarea id="connection-config" readonly spellcheck="false" rows="12"></textarea>
+          <button id="copy-connection">Copy configuration</button>
+          <p id="connection-status" role="status"></p>
+          <p class="hint">Merge this entry with your existing settings, then restart the client. Ask it to check archive status.</p>
+          <p class="hint">Web and mobile chat apps cannot connect directly to this local server.</p>
+        </section>
+        <p id="demo-note" class="hint" hidden>Demo room: invented conversations only. Import the examples, then search for garden or research. This archive is removed when the window closes.</p>
         <footer>
           Stored only on this computer <span id="database-path"></span>
         </footer>
