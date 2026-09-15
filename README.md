@@ -2,17 +2,14 @@
 
 中文版：[README](README.zh-CN.md) · [客户端设置](docs/AI_CLIENTS.zh-CN.md) · [用户指南](docs/USER_GUIDE.zh-CN.md)
 
-Search your imported AI conversations from your preferred MCP client.
+Search your imported AI conversations locally, either through the illustrated
+desktop room or from an MCP client.
 
-> **Privacy:** the archive is stored locally and MCP access is read-only.
-> Retrieved excerpts may be sent to your connected AI provider.
+> **Privacy:** the archive stays on your computer and MCP tools are read-only.
+> Retrieved excerpts may be sent to the AI provider connected to your client.
 > [How your data is handled](docs/privacy/README.md)
 
-Imports include ChatGPT, Claude, Gemini, DeepSeek, Grok, and supported coding
-sessions. NotebookLM support is notebook metadata only.
-[Full import coverage](docs/COMPATIBILITY.md)
-
-## 1. Install
+## Install
 
 Open the desktop with [uv](https://docs.astral.sh/uv/getting-started/installation/):
 
@@ -20,80 +17,53 @@ Open the desktop with [uv](https://docs.astral.sh/uv/getting-started/installatio
 uvx ai-pensieve
 ```
 
-Or run `pipx install ai-pensieve`, then `pensieve`.
-[Package setup, MCP command, and platform requirements](docs/INSTALLATION.md).
-The source setup below remains available for inspecting the code before installation.
-
-Download the project from [GitHub](https://github.com/AS-XS/AI-Pensieve-MCP)
-using **Code → Download ZIP**, extract it, and open a terminal in that folder.
-Python 3.10+ with SQLite FTS5 is required. Dependency installation
-downloads packages; ordinary archive import and search run locally.
-
-On macOS or Linux:
+For a persistent command:
 
 ```sh
-mkdir -p imports runtime
-python3 -m venv .venv
-.venv/bin/python -m pip install -r requirements.txt
+pipx install ai-pensieve
+pensieve
 ```
 
-On Windows PowerShell:
-
-```powershell
-New-Item -ItemType Directory -Force imports, runtime | Out-Null
-py -3 -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
-```
-
-Open the magical memory room with `pensieve`: [optional GUI setup and guide](docs/GUI.md).
-It provides folder import, search, and a conversation reader.
-
-## 2. Import selected history
-
-To verify setup first, [run the synthetic demo](docs/DEMO.md). It checks imports
-and a real MCP connection using only bundled examples.
-
-Follow the [app export guide](docs/EXPORT_GUIDE.md), extract any ZIP,
-and copy one account's selected files/folders into `imports/account-one/`.
-Keep different accounts in separate folders and import each with its own label
-using the [user guide](docs/USER_GUIDE.md#separate-accounts).
-
-On macOS or Linux:
+To run only the read-only MCP server against an existing archive:
 
 ```sh
-PYTHONPATH=src .venv/bin/python -m archive_mcp import-auto runtime/archive.sqlite imports/account-one --account account-one
-PYTHONPATH=src .venv/bin/python -m archive_mcp check runtime/archive.sqlite
+uvx ai-pensieve-mcp /absolute/path/to/archive.sqlite
 ```
 
-On Windows PowerShell:
+See the [package installation guide](docs/INSTALLATION.md) for client setup,
+platform requirements, persistent archive locations, and source installation.
 
-```powershell
-$env:PYTHONPATH = (Resolve-Path src).Path
-.\.venv\Scripts\python.exe -m archive_mcp import-auto runtime\archive.sqlite imports\account-one --account account-one
-.\.venv\Scripts\python.exe -m archive_mcp check runtime\archive.sqlite
-```
+## Use the desktop
 
-Imports leave original files unchanged. A successful check reports `"ok": true`.
-Unchanged imports do not duplicate canonical records. Import reports accumulate. See the
-[user guide](docs/USER_GUIDE.md) for import reports, refreshes, and native sessions.
+1. Open the wooden door and touch the Pensieve.
+2. Choose **Import a memory**, then select a provider bottle, **Unmarked** for
+   auto-detection, or **Find & import local sessions**.
+3. Choose an exported file or folder, inspect the selection, and pour it into
+   the basin. The original files stay unchanged.
+4. Choose **Search the waters**, search by keyword, and open a smoke result to
+   read the original thread.
 
-## 3. Connect and use
+The GUI imports ChatGPT, Claude, Gemini, DeepSeek, Grok, and supported coding
+sessions. NotebookLM currently provides notebook metadata only. See the
+[full compatibility matrix](docs/COMPATIBILITY.md) and [export guide](docs/EXPORT_GUIDE.md).
 
-Check [client support and verification status](docs/COMPATIBILITY.md#mcp-clients),
-then follow the [setup guide](docs/AI_CLIENTS.md). After connecting,
-ask it to check archive status, then try:
+## Connect an AI client
+
+Import an archive first, then follow [AI client setup](docs/AI_CLIENTS.md) and
+check the [client verification status](docs/COMPATIBILITY.md#mcp-clients).
+Try prompts such as:
 
 > Search my archive for discussions about machine learning. Show the source
 > conversations and dates supporting your answer.
 
-> Find discussions of my project across different AI providers and compare
-> the decisions recorded in them.
+> Find discussions of my project across different AI providers and compare the
+> decisions recorded in them.
 
-[More example prompts and what each tool does](docs/EXAMPLE_PROMPTS.md).
+[More example prompts and tool details](docs/EXAMPLE_PROMPTS.md).
 
-The AI searches the imported snapshot; new conversations appear after another
-import or refresh. For older archives, follow the
-[upgrade instructions](docs/MCP_TOOLS.md#upgrading-an-existing-archive).
+The archive is a local snapshot: import or refresh again when new conversations
+should appear. For command-line imports, custom source folders, and revision and
+deduplication rules, see the [user guide](docs/USER_GUIDE.md).
 
 Licensed under [Apache License 2.0](LICENSE).
 
