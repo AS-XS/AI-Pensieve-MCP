@@ -6,15 +6,24 @@ build-backend = "setuptools.build_meta"
 name = "ai-pensieve-mcp"
 version = "0.1.0"
 description = "A local archive of AI conversations with read-only MCP retrieval"
+readme = "docs/PYPI_README.md"
 requires-python = ">=3.10"
-license = {file = "LICENSE"}
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+classifiers = ["Development Status :: 3 - Alpha", "Programming Language :: Python :: 3"]
 dependencies = ["mcp==2.1.1"]
 
 [project.optional-dependencies]
 gui = ["pywebview==6.2.1"]
 
 [project.scripts]
-pensieve = "archive_mcp.gui:main"
+ai-pensieve-mcp = "archive_mcp.mcp_server:main"
+pensieve-archive = "archive_mcp.cli:main"
+
+[project.urls]
+Repository = "https://github.com/AS-XS/AI-Pensieve-MCP"
+Documentation = "https://github.com/AS-XS/AI-Pensieve-MCP#readme"
+Issues = "https://github.com/AS-XS/AI-Pensieve-MCP/issues"
 
 [tool.setuptools.packages.find]
 where = ["src"]

@@ -14,6 +14,10 @@ sessions. NotebookLM support is notebook metadata only.
 
 ## 1. Install
 
+For uvx/pipx commands and PyPI release status, see
+[isolated package installation](docs/INSTALLATION.md). The source setup below
+remains available for inspecting the code before installation.
+
 Download the project from [GitHub](https://github.com/AS-XS/AI-Pensieve-MCP)
 using **Code → Download ZIP**, extract it, and open a terminal in that folder.
 Python 3.10+ with SQLite FTS5 is required. Dependency installation
@@ -86,3 +90,5 @@ import or refresh. For older archives, follow the
 [upgrade instructions](docs/MCP_TOOLS.md#upgrading-an-existing-archive).
 
 Licensed under [Apache License 2.0](LICENSE).
+
+<!-- mcp-name: io.github.AS-XS/ai-pensieve-mcp -->

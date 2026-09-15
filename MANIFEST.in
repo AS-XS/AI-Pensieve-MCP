@@ -1,0 +1,9 @@
+include LICENSE NOTICE README.md
+recursive-include src/archive_mcp *.py *.html *.css *.js *.png *.svg LICENSE.txt
+prune tests
+prune fixtures
+prune docs
+prune packaging
+prune runtime
+include docs/PYPI_README.md
+global-exclude __pycache__ *.py[cod]
