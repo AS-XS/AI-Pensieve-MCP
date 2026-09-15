@@ -28,7 +28,8 @@ body {
 }
 button,
 input,
-select {
+select,
+textarea {
   font: inherit;
   color: inherit;
 }
@@ -42,6 +43,7 @@ button:disabled {
 button:focus-visible,
 input:focus-visible,
 select:focus-visible,
+textarea:focus-visible,
 summary:focus-visible {
   outline: 2px solid #dfebec;
   outline-offset: 6px;
@@ -54,7 +56,8 @@ button:hover {
   color: white;
 }
 input,
-select {
+select,
+textarea {
   border: 1px solid var(--line);
   border-radius: 2px;
   background: #090f14c9;
@@ -69,6 +72,16 @@ select {
 select option {
   background: #11191d;
 }
+#connection-config {
+  display: block;
+  width: 100%;
+  margin: 12px 0;
+  resize: vertical;
+  font: 12px/1.6 ui-monospace, monospace;
+}
+#connect-view p { max-width: 75ch; }
+#connect-view label { display: block; margin-top: 16px; }
+#copy-connection { border: 1px solid var(--line); padding: 10px 16px; }
 input::placeholder {
   color: #a5b4b2;
   opacity: 0.8;

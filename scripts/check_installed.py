@@ -9,6 +9,7 @@ import tempfile
 
 import archive_mcp
 from archive_mcp.gui import GuiService, page_html
+from archive_mcp.gui_demo import write_demo_sources
 from mcp import Client
 from mcp.client.stdio import StdioServerParameters, stdio_client
 
@@ -55,7 +56,14 @@ def main():
         assert result['completed'] == 1 and not result['error']
         assert service.search('installation')['groups']
         asyncio.run(check_server(service.database))
-    print('Installed core/desktop entrypoints, bundled artwork, synthetic import/search and 13-tool STDIO passed.')
+        examples = root / 'examples'
+        write_demo_sources(examples)
+        demo = GuiService(root / 'demo.sqlite', examples)
+        imported = demo.import_local('synthetic-demo')
+        assert imported['completed'] == 2 and not imported['error']
+        assert demo.status()['totals']['conversations'] == 4
+        assert demo.search('garden')['groups']
+    print('Installed core/desktop entrypoints, bundled artwork, temporary demo, synthetic import/search and 13-tool STDIO passed.')
 
 
 if __name__ == '__main__':

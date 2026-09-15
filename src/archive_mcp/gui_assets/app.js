@@ -49,8 +49,9 @@ function show(page) {
   $("basin-menu").hidden = true;
   $("pensieve").setAttribute("aria-expanded", "false");
   document.body.dataset.scene = page === "search" ? "search" : "room";
-  $("library-view").hidden = page === "import";
+  $("library-view").hidden = !["library", "search"].includes(page);
   $("import-view").hidden = page !== "import";
+  $("connect-view").hidden = page !== "connect";
   $("workbench").dataset.mode = page;
   bindUI(
     $("page-name"),
@@ -58,6 +59,7 @@ function show(page) {
       library: "Your collected memories",
       import: "Choose a memory vessel",
       search: "Look into the waters",
+      connect: "Connect to an AI",
     }[page],
   );
   bindUI(
@@ -67,6 +69,7 @@ function show(page) {
   if (!$("workbench").open) $("workbench").showModal();
   $("workbench").querySelector(".workbench-surface").scrollTop = 0;
   if (page === "library") guarded(() => browse())();
+  if (page === "connect") guarded(connectionConfig)();
   if (page === "search") {
     $("browse-more").hidden = true;
     $("query").focus();
@@ -91,6 +94,13 @@ function options(id, values, placeholder) {
 async function refresh() {
   const data = await api("status");
   $("database-path").textContent = data.database;
+  $("demo-note").hidden = !data.demo_sources;
+  $("connect-ai").disabled = Boolean(data.demo_sources);
+  if (data.demo_sources) {
+    $("source-path").value = data.demo_sources;
+    $("import-account").value = "synthetic-demo";
+    $("quick-import").hidden = true;
+  }
   $("inventory").replaceChildren();
   for (const [key, label] of [
     ["conversations", "Conversations"],
@@ -573,6 +583,45 @@ async function importSources(local = false) {
     $("progress").hidden = true;
   }
 }
+let connectionGeneration = 0;
+async function connectionConfig() {
+  const generation = ++connectionGeneration;
+  const client = $("connection-client").value;
+  $("copy-connection").disabled = true;
+  $("connection-config").value = "";
+  bindUI($("connection-status"), "");
+  const result = await api("connection_config", client);
+  if (generation !== connectionGeneration) return;
+  $("connection-config").value = result.configuration;
+  bindUI($("connection-launcher"), result.launcher);
+  bindUI($("connection-instructions"), {
+    codex: "Add this entry to ~/.codex/config.toml (or your CODEX_HOME config.toml). Update an existing ai-pensieve-mcp entry instead of adding a duplicate.",
+    "claude-desktop": "In Claude Desktop, open Settings → Developer → Edit Config. Add this server inside mcpServers in claude_desktop_config.json.",
+    cursor: "Add this server inside mcpServers in ~/.cursor/mcp.json for your personal configuration.",
+    generic: "Use these command, arguments and environment values in a client that supports local STDIO. Its configuration format may differ.",
+  }[client]);
+  bindUI($("connection-evidence"), client === "codex"
+    ? "Codex CLI was tested on macOS with synthetic data. Desktop setup remains unverified."
+    : client === "generic" ? "Client integration unverified."
+    : "Official configuration format checked; integration with this archive is not yet tested in this client.");
+  $("copy-connection").disabled = false;
+}
+$("connect-ai").onclick = () => show("connect");
+$("connection-client").onchange = guarded(connectionConfig);
+$("copy-connection").onclick = guarded(async () => {
+  const field = $("connection-config");
+  try {
+    await navigator.clipboard.writeText(field.value);
+  } catch (_) {
+    field.focus();
+    field.select();
+    if (!document.execCommand("copy")) {
+      bindUI($("connection-status"), "Select the configuration and copy it with your keyboard.");
+      return;
+    }
+  }
+  bindUI($("connection-status"), "Configuration copied. Paste it into your client's settings.");
+});
 $("browse-library").onclick = guarded(() => browse());
 $("browse-more").onclick = guarded(() => browse(true));
 $("empty-import").onclick = () => show("import");

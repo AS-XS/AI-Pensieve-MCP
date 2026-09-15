@@ -3,7 +3,11 @@
 Version **0.1.0** is published on PyPI: [desktop](https://pypi.org/project/ai-pensieve/)
 and [MCP core](https://pypi.org/project/ai-pensieve-mcp/). Fresh uvx and pipx
 installations, native GUI launch, and STDIO were verified on macOS with Python
-3.13. The [source installation](GUI.md#install-and-open) remains available.
+3.13. The [source installation](SOURCE_INSTALL.md) remains available.
+
+The source checkout also includes a **Connect to an AI** shelf action and
+`pensieve --demo` for a temporary archive of invented exports. These additions
+are not included in the published 0.1.0 packages yet.
 
 ## Desktop
 

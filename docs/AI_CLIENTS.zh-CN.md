@@ -6,9 +6,38 @@ AI Pensieve MCP 是一个本地 STDIO MCP 服务。兼容的 AI 客户端会启�
 
 本手册是常用设置的简明版。完整的客户端列表、官方参考链接和每个客户端的验证状态，请参阅英文版 [AI client setup](AI_CLIENTS.md) 和 [兼容性说明](COMPATIBILITY.md)。
 
-## 开始前
+## 通过包安装后连接
 
-1. 完成 [README 安装和导入步骤](../README.md)。
+先导入档案，并从桌面藏书架底部复制数据库的绝对路径。通过 uv 安装时，客户端启动命令是 `uvx`，参数为 `ai-pensieve-mcp` 和数据库路径；不需要下载源码或设置 `PYTHONPATH`。
+
+Codex 的 `~/.codex/config.toml`（或 `$CODEX_HOME/config.toml`）示例：
+
+```toml
+[mcp_servers.ai-pensieve-mcp]
+command = "uvx"
+args = ["ai-pensieve-mcp", "/absolute/path/to/archive.sqlite"]
+```
+
+Claude Desktop 和 Cursor 的 JSON 示例：
+
+```json
+{
+  "mcpServers": {
+    "ai-pensieve-mcp": {
+      "command": "uvx",
+      "args": ["ai-pensieve-mcp", "/absolute/path/to/archive.sqlite"]
+    }
+  }
+}
+```
+
+Claude Desktop 中打开 **Settings → Developer → Edit Config**；Cursor 使用个人配置 `~/.cursor/mcp.json`。只合并这个服务条目，保留其他设置，然后重启客户端。若找不到 `uvx`，使用其可执行文件的绝对路径。Windows JSON 路径可使用正斜杠。
+
+当前源码版的“藏书架 → 连接 AI 客户端”可以生成实际路径的配置，并在没有 uvx 时提供本次安装的 Python 启动方式；PyPI 0.1.0 尚不包含此界面。配置格式已于 2026-09-15 查阅官方文档；Codex CLI 有合成数据测试，Codex 桌面、Claude Desktop 和 Cursor 的实际连接仍未验证。详见[英文说明及官方链接](AI_CLIENTS.md#package-installation)。
+
+## 源码安装的设置步骤
+
+1. 完成[源码安装](SOURCE_INSTALL.md)及[导入步骤](USER_GUIDE.zh-CN.md)。
 2. 确认数据库已经存在：`runtime/archive.sqlite`。
 3. 在客户端配置中使用绝对路径。
 

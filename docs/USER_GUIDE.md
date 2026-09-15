@@ -1,6 +1,11 @@
 # User guide
 
-Run commands from the project folder after completing the README installation.
+The source commands below run from the project folder after [source installation](SOURCE_INSTALL.md).
+For a package installation, replace `PYTHONPATH=src .venv/bin/python -m archive_mcp`
+with `uvx --from ai-pensieve-mcp pensieve-archive` (also on Windows), and supply
+your actual archive path instead of `runtime/archive.sqlite`. The desktop library
+footer shows that path. For a new CLI archive, run `pensieve-archive init` with
+the database path through the same launcher before importing.
 MCP configuration is in [AI client setup](AI_CLIENTS.md).
 Use the [app export guide](EXPORT_GUIDE.md) to obtain the supported files.
 Detailed import coverage is in [compatibility](COMPATIBILITY.md).

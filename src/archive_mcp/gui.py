@@ -11,9 +11,13 @@ from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 import sqlite3
 import threading
+from tempfile import TemporaryDirectory
+from contextlib import ExitStack
 
 from .auto_import import classify, IMPORTERS
 from .paths import default_database
+from .client_config import connection_config
+from .gui_demo import write_demo_sources
 from .batches import run_batch
 from .sync import default_roots, local_sources
 from .db import (
@@ -39,7 +43,8 @@ FORMATS = {
 class GuiService:
     """Testable local operations; connections belong to the calling thread."""
 
-    def __init__(self, database):
+    def __init__(self, database, demo_sources=None):
+        self.demo_sources = Path(demo_sources).resolve() if demo_sources else None
         self.database = Path(database).expanduser().resolve()
         self.database.parent.mkdir(parents=True, exist_ok=True)
         with closing(connect(self.database)) as db:
@@ -50,7 +55,14 @@ class GuiService:
 
     def status(self):
         with closing(connect(self.database, read_only=True)) as db:
-            return {'database': str(self.database), 'formats': FORMATS, **archive_status(db)}
+            return {'database': str(self.database), 'formats': FORMATS,
+                    'demo_sources': str(self.demo_sources) if self.demo_sources else None,
+                    **archive_status(db)}
+
+    def connection_config(self, client):
+        if self.demo_sources:
+            raise ValueError('Open your own archive to create a lasting connection.')
+        return connection_config(self.database, client)
 
     def preview(self, path, source_format='auto'):
         selected, ignored, excluded = self._selection(path, source_format)
@@ -65,6 +77,8 @@ class GuiService:
             raise ValueError('Choose a source file or folder first.')
         if source_format not in FORMATS:
             raise ValueError('Select a supported format or auto-detect.')
+        if self.demo_sources and not Path(path).expanduser().resolve().is_relative_to(self.demo_sources):
+            raise ValueError('Demo mode uses example files only.')
         found, ignored = classify([Path(path).expanduser()])
         selected = [(kind, source) for kind, source in found if source_format in ('auto', kind)]
         return selected, ignored, len(found) - len(selected)
@@ -84,6 +98,8 @@ class GuiService:
         return self._import(self._local_selection, account)
 
     def _local_selection(self):
+        if self.demo_sources:
+            return self._selection(self.demo_sources, 'auto')
         selected = [(kind, path) for kind, path, _ in local_sources(*default_roots())]
         zcode = Path.home() / '.zcode/cli/db/db.sqlite'
         if zcode.is_file():
@@ -215,7 +231,13 @@ class GuiBridge:
         return self._service.status()
 
     @ui_call
+    def connection_config(self, client):
+        return self._service.connection_config(client)
+
+    @ui_call
     def choose(self, folder=True):
+        if self._service.demo_sources:
+            return str(self._service.demo_sources)
         return self._chooser(bool(folder))
 
     @ui_call
@@ -274,8 +296,11 @@ def page_html():
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description='Open the local AI Pensieve desktop prototype.')
-    parser.add_argument('--database', type=Path, default=default_database(),
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument('--database', type=Path, default=default_database(),
                         help='Local SQLite archive (default: persistent per-user application data)')
+    mode.add_argument('--demo', action='store_true',
+                      help='Try invented exports in a temporary archive; no personal sources are scanned')
     try:
         installed_version = version('ai-pensieve-mcp')
     except PackageNotFoundError:
@@ -286,10 +311,21 @@ def main(argv=None):
         import webview
     except ImportError:
         parser.exit(1, 'Install the optional GUI first: python -m pip install ".[gui]"\n')
-    try:
-        service = GuiService(args.database)
-    except Exception as error:
-        parser.exit(1, f'Could not open the local archive ({type(error).__name__}). Check --database and the directory permissions.\n')
+    with ExitStack() as stack:
+        demo_sources = None
+        if args.demo:
+            root = Path(stack.enter_context(TemporaryDirectory(prefix='pensieve-demo-')))
+            args.database = root / 'archive.sqlite'
+            demo_sources = root / 'examples'
+            write_demo_sources(demo_sources)
+        try:
+            service = GuiService(args.database, demo_sources)
+        except Exception as error:
+            parser.exit(1, f'Could not open the local archive ({type(error).__name__}). Check --database and the directory permissions.\n')
+        return open_window(service, webview)
+
+
+def open_window(service, webview):
     def choose(folder):
         result = window.create_file_dialog(webview.FileDialog.FOLDER if folder else webview.FileDialog.OPEN)
         return result[0] if result else None

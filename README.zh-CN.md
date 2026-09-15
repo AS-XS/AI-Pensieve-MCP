@@ -33,16 +33,18 @@ uvx ai-pensieve-mcp /absolute/path/to/archive.sqlite
 ## 使用桌面界面
 
 1. 打开木门，触碰 Pensieve。
-2. 选择“导入记忆”，再选择服务商瓶子、“未标记”自动识别，或“查找并导入本地会话”。
+2. 选择“导入记忆”，再选择服务商瓶子、“无标记”自动识别，或“一键查找并导入本地会话”。
 3. 选择导出文件或文件夹，检查选择结果，然后倒入盆中。原始文件不会被修改。
-4. 选择“搜索水面”，输入关键词，再点击烟雾结果阅读原始线程。
+4. 选择“探寻记忆之水”，输入关键词，再点击烟雾结果阅读原始线程。
 
 支持导入 ChatGPT、Claude、Gemini、DeepSeek、Grok 以及部分编程工具会话。NotebookLM 目前仅导入笔记本元数据。
 请查看[完整兼容性矩阵](docs/COMPATIBILITY.md)和[导出指南](docs/EXPORT_GUIDE.md)。
 
 ## 连接 AI 客户端
 
-先导入档案，再阅读 [AI 客户端设置](docs/AI_CLIENTS.zh-CN.md) 和[客户端验证状态](docs/COMPATIBILITY.md#mcp-clients)。可以尝试：
+先导入档案，再阅读 [AI 客户端设置](docs/AI_CLIENTS.zh-CN.md) 和[客户端验证状态](docs/COMPATIBILITY.md#mcp-clients)。
+
+当前源码版还提供“藏书架 → 连接 AI 客户端”和临时演示命令 `pensieve --demo`；PyPI 0.1.0 尚不包含这两项。可以尝试：
 
 > 搜索我的档案中关于机器学习的讨论，并给出支持结论的来源对话和日期。
 

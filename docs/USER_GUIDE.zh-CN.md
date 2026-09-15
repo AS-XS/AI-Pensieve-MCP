@@ -1,6 +1,6 @@
 # 用户指南（简明版）
 
-完成 [中文 README](../README.zh-CN.md) 的安装后，在项目文件夹中运行命令。客户端配置请参阅[中文 AI 客户端设置](AI_CLIENTS.zh-CN.md)。支持的导出文件请参阅[导出指南](EXPORT_GUIDE.md)。
+以下源码命令需要先完成[源码安装](SOURCE_INSTALL.md)，并在项目文件夹中运行。通过包安装时，可将 `PYTHONPATH=src .venv/bin/python -m archive_mcp`（Windows 中对应的 Python 启动部分）替换为 `uvx --from ai-pensieve-mcp pensieve-archive`，并将 `runtime/archive.sqlite` 替换为实际档案路径；桌面藏书架底部会显示此路径。新建命令行档案时，先通过同一启动方式执行 `init 数据库路径`。客户端配置请参阅[中文 AI 客户端设置](AI_CLIENTS.zh-CN.md)。支持的导出文件请参阅[导出指南](EXPORT_GUIDE.md)。
 
 ## 为不同账号分别导入
 

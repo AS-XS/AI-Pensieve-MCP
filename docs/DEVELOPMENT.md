@@ -3,7 +3,7 @@
 Use synthetic fixtures for automated tests. Keep exports, databases, logs,
 source maps, and private evaluations out of Git.
 
-macOS/Linux, after README setup:
+macOS/Linux, after [source installation](SOURCE_INSTALL.md):
 
 ~~~sh
 PYTHONPATH=src .venv/bin/python -m unittest discover -s tests -v
