@@ -14,9 +14,15 @@ sessions. NotebookLM support is notebook metadata only.
 
 ## 1. Install
 
-For uvx/pipx commands and PyPI release status, see
-[isolated package installation](docs/INSTALLATION.md). The source setup below
-remains available for inspecting the code before installation.
+Open the desktop with [uv](https://docs.astral.sh/uv/getting-started/installation/):
+
+```sh
+uvx ai-pensieve
+```
+
+Or run `pipx install ai-pensieve`, then `pensieve`.
+[Package setup, MCP command, and platform requirements](docs/INSTALLATION.md).
+The source setup below remains available for inspecting the code before installation.
 
 Download the project from [GitHub](https://github.com/AS-XS/AI-Pensieve-MCP)
 using **Code → Download ZIP**, extract it, and open a terminal in that folder.

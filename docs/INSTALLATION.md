@@ -1,12 +1,13 @@
 # Isolated package installation
 
-The first PyPI release is being prepared. Until both packages are published,
-use the [source installation](GUI.md#install-and-open); do not assume the short
-registry commands below are available yet.
+Version **0.1.0** is published on PyPI: [desktop](https://pypi.org/project/ai-pensieve/)
+and [MCP core](https://pypi.org/project/ai-pensieve-mcp/). Fresh uvx and pipx
+installations, native GUI launch, and STDIO were verified on macOS with Python
+3.13. The [source installation](GUI.md#install-and-open) remains available.
 
 ## Desktop
 
-After publication, with [uv](https://docs.astral.sh/uv/getting-started/installation/)
+With [uv](https://docs.astral.sh/uv/getting-started/installation/)
 already installed:
 
 ```sh
@@ -30,8 +31,6 @@ See [GUI setup](GUI.md) for platform requirements and persistent archive locatio
 Use `--database /path/to/archive.sqlite` to select an existing archive.
 
 ## MCP without the desktop dependencies
-
-After publication:
 
 ```sh
 uvx ai-pensieve-mcp /absolute/path/to/archive.sqlite

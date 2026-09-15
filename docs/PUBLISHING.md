@@ -17,7 +17,12 @@ archives and local planning files are excluded from package distributions.
 
 Sign in to your own PyPI account and open
 [Publishing](https://pypi.org/manage/account/publishing/). Add a pending GitHub
-publisher for **each** package, using:
+publisher for each package, using the fields below. For a new pair of projects,
+bootstrap them sequentially: PyPI rejects two pending publishers with the same
+workflow configuration. Add the core publisher and run the workflow first;
+the core upload succeeds and the unconfigured desktop upload fails. Then add
+the desktop publisher and rerun the failed publishing job, reusing the tested
+artifacts. Once both projects exist, the same workflow publishes both normally.
 
 | Field | Value |
 | --- | --- |

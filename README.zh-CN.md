@@ -10,7 +10,14 @@
 
 ## 1. 安装
 
-uvx/pipx 命令和 PyPI 发布状态请参阅[独立安装指南](docs/INSTALLATION.md)。下面仍提供源码安装方式。
+安装 [uv](https://docs.astral.sh/uv/getting-started/installation/) 后，一条命令打开桌面界面：
+
+```sh
+uvx ai-pensieve
+```
+
+也可以运行 `pipx install ai-pensieve`，然后运行 `pensieve`。
+[MCP 命令和平台要求](docs/INSTALLATION.md)。下面仍提供源码安装方式。
 
 从 [GitHub](https://github.com/AS-XS/AI-Pensieve-MCP) 下载 ZIP，解压后在终端进入项目文件夹。需要 Python 3.10 或更高版本，并且 SQLite 支持 FTS5。
 
