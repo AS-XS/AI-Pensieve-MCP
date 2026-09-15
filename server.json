@@ -1,0 +1,31 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.AS-XS/ai-pensieve-mcp",
+  "title": "AI Pensieve MCP",
+  "description": "Search and cross-reference local AI chat history with read-only tools and source citations.",
+  "version": "0.1.0",
+  "repository": {
+    "url": "https://github.com/AS-XS/AI-Pensieve-MCP",
+    "source": "github"
+  },
+  "websiteUrl": "https://github.com/AS-XS/AI-Pensieve-MCP#readme",
+  "packages": [
+    {
+      "registryType": "pypi",
+      "registryBaseUrl": "https://pypi.org",
+      "identifier": "ai-pensieve-mcp",
+      "version": "0.1.0",
+      "runtimeHint": "uvx",
+      "transport": { "type": "stdio" },
+      "packageArguments": [
+        {
+          "type": "positional",
+          "valueHint": "database",
+          "description": "Absolute path to your existing, imported SQLite archive. Find it in the desktop library footer.",
+          "format": "filepath",
+          "isRequired": true
+        }
+      ]
+    }
+  ]
+}

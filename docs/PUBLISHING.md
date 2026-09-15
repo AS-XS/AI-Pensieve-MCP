@@ -9,8 +9,8 @@ Two distributions share version 0.1.0:
 
 Keep both versions and the desktop's exact core dependency aligned. The desktop
 license/notice copies must match the root files. The core's PyPI description is
-`docs/PYPI_README.md`, including its future MCP Registry ownership marker.
-The root README remains the source-install guide. Generated artwork prompts,
+`docs/PYPI_README.md`, including its MCP Registry ownership marker.
+The root README is the short user quickstart. Generated artwork prompts,
 archives and local planning files are excluded from package distributions.
 
 ## One-time PyPI setup
@@ -54,10 +54,27 @@ which now include distribution builds and installed-command/MCP smoke tests.
 6. Update the installation guide's publication status only after the registry
    commands have been verified. Record the release version and tested platform.
 
-The MCP Registry is a separate follow-up. Confirm the authenticated GitHub
-namespace, validate `server.json` against the current official schema, and test
-the published server before registering it. A README ownership marker alone
-does not register the server or imply Registry approval.
+## MCP Registry
+
+`server.json` describes the core server as `io.github.AS-XS/ai-pensieve-mcp`.
+It points to the published PyPI core and requests one required positional input:
+the absolute path to an existing imported archive. Clients use `uvx` to launch
+the package over STDIO. The desktop launcher is a separate application and is
+not an MCP server entry.
+
+After publishing a new PyPI version, keep the package and server versions in
+`server.json` aligned with `pyproject.toml`. Run **Publish MCP Registry metadata**
+on `main` in GitHub Actions. This manual workflow checks the official schema,
+versions and the ownership marker in the published PyPI description, then uses
+GitHub OIDC and the pinned official publisher to register the metadata. It needs
+no stored Registry token. The validation script requires Python 3.11+ and
+`jsonschema==4.26.0`; these are release tools, not runtime requirements.
+
+Check the [Registry API entry](https://registry.modelcontextprotocol.io/v0.1/servers/io.github.AS-XS%2Fai-pensieve-mcp/versions/latest)
+after the workflow succeeds. Registration shares public package metadata;
+archive paths are supplied locally by each user and archive contents are not
+uploaded. Listing does not imply a security audit or guarantee inclusion in
+every downstream marketplace.
 
 Sources: [PyPI pending publishers](https://docs.pypi.org/trusted-publishers/creating-a-project-through-oidc/),
 [PyPI publishing action](https://github.com/pypa/gh-action-pypi-publish),
