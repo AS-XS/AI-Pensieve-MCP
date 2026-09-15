@@ -44,7 +44,7 @@ uvx ai-pensieve-mcp /absolute/path/to/archive.sqlite
 
 先导入档案，再阅读 [AI 客户端设置](docs/AI_CLIENTS.zh-CN.md) 和[客户端验证状态](docs/COMPATIBILITY.md#mcp-clients)。
 
-当前源码版还提供“藏书架 → 连接 AI 客户端”和临时演示命令 `pensieve --demo`；PyPI 0.1.0 尚不包含这两项。可以尝试：
+0.2.0 版新增“藏书架 → 连接 AI 客户端”，可复制连接配置；`pensieve --demo` 可在临时档案中体验虚构记忆。可以尝试：
 
 > 搜索我的档案中关于机器学习的讨论，并给出支持结论的来源对话和日期。
 

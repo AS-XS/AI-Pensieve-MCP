@@ -51,8 +51,8 @@ sessions. NotebookLM currently provides notebook metadata only. See the
 
 Import an archive first, then follow [AI client setup](docs/AI_CLIENTS.md) and
 check the [client verification status](docs/COMPATIBILITY.md#mcp-clients).
-The current source GUI also offers **shelf → Connect to an AI** and a temporary
-`pensieve --demo` mode; these are not in PyPI 0.1.0 yet.
+Version 0.2.0 adds **shelf → Connect to an AI** for copyable setup and
+`pensieve --demo` to try invented memories in a temporary archive.
 Try prompts such as:
 
 > Search my archive for discussions about machine learning. Show the source

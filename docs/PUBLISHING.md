@@ -1,6 +1,6 @@
 # Publishing the Python packages
 
-Two distributions share version 0.1.0:
+Two distributions share version 0.2.0:
 
 - `ai-pensieve-mcp` is built from the repository root and provides the read-only
   STDIO command plus `pensieve-archive`. Its GUI dependency remains optional.

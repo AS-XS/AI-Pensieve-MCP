@@ -17,6 +17,10 @@ In an MCP client, set command `uvx` and arguments `ai-pensieve-mcp` and your
 absolute database path. The process speaks STDIO; it does not open a desktop
 window. For the illustrated GUI, install the separate `ai-pensieve` package.
 
+The desktop's shelf includes **Connect to an AI** with copyable configurations
+for the current archive. To try its temporary invented-data demo, run
+`uvx ai-pensieve --demo`. Client settings are not modified automatically.
+
 CLI import/check commands are available through:
 
 ```sh
