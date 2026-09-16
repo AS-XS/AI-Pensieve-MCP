@@ -1,13 +1,14 @@
 # Isolated package installation
 
-Version **0.1.0** is published on PyPI: [desktop](https://pypi.org/project/ai-pensieve/)
+Version **0.2.0** is published on PyPI: [desktop](https://pypi.org/project/ai-pensieve/)
 and [MCP core](https://pypi.org/project/ai-pensieve-mcp/). Fresh uvx and pipx
 installations, native GUI launch, and STDIO were verified on macOS with Python
 3.13. The [source installation](SOURCE_INSTALL.md) remains available.
 
-Version 0.2.0 is prepared for publication with a **Connect to an AI** shelf
-action and `pensieve --demo` for a temporary archive of invented exports.
-The published 0.1.0 packages do not include these additions.
+Version 0.2.0 includes a **Connect to an AI** shelf action and `pensieve --demo`
+for a temporary archive of invented exports. Upgrade a pipx installation with
+`pipx upgrade ai-pensieve`, or refresh uv's cached version with
+`uvx --refresh ai-pensieve`. See the [release notes](releases/0.2.0.md).
 
 ## Desktop
 
